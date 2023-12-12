@@ -1,0 +1,56 @@
+
+
+/* div.dataTables_wrapper {
+        width: 800px;
+        margin: 0 auto;
+    } */
+
+#goTopButton {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99;
+  color: #f1f8fe;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  cursor: pointer;
+  transition: opacity 0.1s;
+  display: flex; /* Usar flexbox para centrar el contenido */
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
+}
+
+
+#goTopButton::after {
+  content: "↑"; /* Agregar una flecha ↑ como contenido pseudo-elemento */
+  font-size: 30px;
+}
+
+
+/* TABLA DETALLE INCOMING */
+.tabla-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+#tabla-detalle-incoming {
+  width: 100%;
+  /* Asegura que la tabla ocupe todo el ancho disponible */
+}
+
+@media (max-width: 1068px) {
+  #tabla-detalle-incoming .observaciones {
+    display: none;
+  }
+}
+
+.form-signin{
+  max-width: 330px;
+  padding: 1rem;
+}
+
+

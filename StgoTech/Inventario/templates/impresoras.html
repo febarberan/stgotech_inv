@@ -1,0 +1,64 @@
+<!-- {% extends "base.html" %}
+
+{% block body %}
+
+
+    
+
+<div class="row p-2">
+    <div class="col-md-6 p-2">
+        <h2>Formularios</h2>
+        <br>
+        <table class="table table-striped table-sm">
+            <tr>
+                <th class="col-sm-4">Impresora seleccionada:</th></th>
+                <td class="col-sm-8"><h6>{{ request.session.selected_printer }}</h6></td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Cantidad de Hojas:</th></th>
+                <td class="col-sm-8"><h6>{{ request.session.cantidad_hojas }}</h6></td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Incoming Inspection Form</th></th>
+                <td class="col-sm-8"><a href="{% url 'imprimir_excel_incoming' sn_batch_pk=datos.sn_batch_pk %}">Imprimir Incoming Forms</a></td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Etiqueta Part Label 1</th></th>
+                <td class="col-sm-8"><a href="#">Proximamente</a></td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Etiqueta Part Label 2</th></th>
+                <td class="col-sm-8"><a href="#">Proximamente</a></td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Etiqueta Part Label 3</th></th>
+                <td class="col-sm-8"><a href="#">Proximamente</a></td>
+            </tr>
+            
+        </table>
+
+        
+    </div>
+    <div class="col-4" style="padding: 69px;">
+        <h5>Configurar Impresora</h5>
+        <form method="POST"">
+            {% csrf_token %}
+            <select name="impresora" id="impresora">
+                <option value="" disabled selected>Seleccionar Impresora</option>
+                {% for printer in printers %}
+                    <option value="{{ printer }}">{{ printer }}</option>
+                {% endfor %}
+            </select>
+
+            <div pd-4>
+                <label for="cantidad_hojas">Cantidad de hojas:</label>
+                <input type="number" name="cantidad_hojas" value="1" />
+            </div>
+            <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Seleccionar">
+        
+        </form>
+          
+
+    </div>
+</div>
+{% endblock %} -->

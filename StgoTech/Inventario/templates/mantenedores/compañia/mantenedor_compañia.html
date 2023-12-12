@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>Mantenedor Compañia</h1>
+    <div class="mantenedor">
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Nombre Compañia</th>
+                      <th scope="col">Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for compañia in get_compañia %}
+                  <tr class="">
+                      <td>{{compañia.nom_compania}}</td>
+                      <td>
+                          <a name="" id="" class="btn btn-primary" href="/editar_compañia/{{compañia.cod_compania}}" role="button">Editar</a>
+                          <a name="" id="" class="btn btn-danger" onclick="destroy('{{compañia.cod_compania}}')" href="#" role="button">Eliminar</a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <div class="container">
+            <a name="" id="" class="btn btn-primary" href="/registrar_compañia/" role="button">Añadir Compañia</a>
+          </div>
+      </div>
+    </div>
+  </div>
+{% block js %}
+<script>
+    function destroy(cod_compania) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_compañia/" + cod_compania
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,11 @@
+*.pyc
+__pycache__
+db.sqlite3
+/env
+/migrations
+migrations
+*.env
+.vscode
+admin
+error.log
+.pytest_cache

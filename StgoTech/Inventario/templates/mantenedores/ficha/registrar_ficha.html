@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container m-2">
+    <h5>Formulario de Ficha</h5>
+    <form id="formulario_categoria" onsubmit="return validateForm_ficha()" action="" method="post">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for ficha in form_reg_ficha %}
+            <div class="col-6 p-2">
+                <label>{{ficha.label}}</label>
+                {{ficha}}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Guardar">
+</div>
+{% block js %}
+<script>
+    function validateForm_ficha() {
+        var inputValue = document.getElementById("name_ficha").value;
+        if (inputValue < 0) {
+            Swal.fire({
+            "title": "Error",
+            "text": "¡No puedes ingresar valores negativos!",
+            "icon": "warning",
+            "showCancelButton": true,
+            "confirmButtonText": "Ok",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "#"
+                }
+            })
+        return false;
+      }
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

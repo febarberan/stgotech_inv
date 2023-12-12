@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<body>
+    <h1>Editar Incoming</h1>
+    
+    <form onsubmit="return validateForm_incoming()" method="post">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for field in form %}
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+            {% endfor %}
+        </div>
+        <input class="btn btn-primary" type="submit" value="Guardar">
+    </form>
+</body>
+<style>
+    .reducido {
+        width: 59%;
+    }
+
+    .select2-selection.select2-selection--single {
+        width: 246.39px;
+        height: 38px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        /* Espacio entre la etiqueta y el input */
+
+    }
+
+    label {
+        display: flex;
+    }
+</style>
+{% block js %}
+<script>
+    function validateInput(inputValue, elementId) {
+        if (inputValue < 0) {
+            Swal.fire({
+                "title": "Error",
+                "text": "¡No puedes ingresar valores negativos!",
+                "icon": "warning",
+                "showCancelButton": true,
+                "confirmButtonText": "Ok",
+                "reverseButtons": true,
+                "confirmButtonColor": "red"
+            })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    // Puedes agregar código adicional si es necesario
+                    window.location.href = "#"
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+
+    function validateForm_incoming() {
+        // Validar cada input y recoger los resultados
+        var isInput1Valid = validateInput(parseFloat(document.getElementById("id_sn_batch_pk").value), "id_sn_batch_pk");
+        var isInput2Valid = validateInput(parseFloat(document.getElementById("id_po").value), "id_po");
+        var isInput3Valid = validateInput(parseFloat(document.getElementById("id_qty").value), "id_qty");
+        var isInput4Valid = validateInput(parseFloat(document.getElementById("id_u_purchase_cost").value), "id_u_purchase_cost");
+        var isInput5Valid = validateInput(parseFloat(document.getElementById("id_part_number").value), "id_u_purchase_cost");
+        // Puedes agregar más lógica aquí para manejar los resultados si es necesario
+
+        // Verificar si todos los inputs son válidos
+        if (isInput1Valid && isInput2Valid && isInput3Valid && isInput4Valid && isInput5Valid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

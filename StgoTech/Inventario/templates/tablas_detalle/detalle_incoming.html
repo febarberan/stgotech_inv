@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% block js %}
+<script>
+    function destroy(sn_batch_pk) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer y eliminara los Incomings y Consumos relacionados.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_incoming/" + sn_batch_pk
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+
+<div class="row p-2">
+    <div class="col-md-6 p-2">
+        <h2>Detalles Incoming</h2>
+        <br>
+        <table class="table table-striped table-sm">
+            <tr>
+                <th class="col-sm-4">Descargar Incoming Inspection Form</th></th>
+                <td class="col-sm-8"><a href="{% url 'exportar_excel_incoming' sn_batch_pk=detalle_incoming.sn_batch_pk %}">Detalle Incoming</a></td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Editar Incoming Inspection Form</th></th>
+                    {% if perms.Inventario.change_detalle_incoming %}
+                    <td class="col-sm-8"><a href="{% url 'editar_detalle_incoming_form' sn_batch_pk=detalle_incoming.sn_batch_pk %}">Editar Incoming Forms</a></td>
+                    {% endif %}
+            </tr>
+            <tr>
+                <th class="col-sm-4">Serial / Batch Number:</th>
+                <td class="col-sm-8">{{detalle_incoming.sn_batch_pk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Categoria:</th>
+                <td class="col-sm-8">{{detalle_incoming.categoria_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Part Number:</th>
+                <td class="col-sm-8">{{detalle_incoming.part_number}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Fecha de Incoming:</th>
+                <td class="col-sm-8">{{detalle_incoming.f_incoming}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Descripción:</th>
+                <td class="col-sm-8">{{detalle_incoming.descripcion}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">PO:</th>
+                <td class="col-sm-8">{{detalle_incoming.po}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">QTY:</th>
+                <td class="col-sm-8">{{detalle_incoming.qty}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Unit Purchase Cost:</th>
+                <td class="col-sm-8">{{detalle_incoming.u_purchase_cost}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Total Purchase Cost:</th>
+                <td class="col-sm-8">{{detalle_incoming.total_u_purchase_cost}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Fecha de Vencimiento:</th>
+                <td class="col-sm-8">{{detalle_incoming.f_vencimiento}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Saldo:</th>
+                <td class="col-sm-8">{{detalle_incoming.saldo}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Clasificación:</th>
+                <td class="col-sm-8">{{detalle_incoming.clasificacion_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Condición:</th>
+                <td class="col-sm-8">{{detalle_incoming.condicion_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">N° Ficha:</th>
+                <td class="col-sm-8">{{detalle_incoming.ficha_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Owner:</th>
+                <td class="col-sm-8">{{detalle_incoming.owner_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">STDF:</th>
+                <td class="col-sm-8">{{detalle_incoming.stdf_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Ubicación:</th>
+                <td class="col-sm-8">{{detalle_incoming.ubicacion_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">UOM:</th>
+                <td class="col-sm-8">{{detalle_incoming.uom_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">OBSERVACIONES:</th>
+                <td class="col-sm-8">{{detalle_incoming.observaciones}}</td>
+            </tr>
+
+            <tr>
+                <th class="col-sm-4">USUARIO DE INGRESO:</th>
+                <td class="col-sm-8">{{detalle_incoming.usuario}}</td>
+            </tr>
+
+            
+        </table>
+
+        {% if perms.Inventario.change_incoming %}
+        <a name="" id="" style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn" href="/editar_incoming/{{detalle_incoming.sn_batch_pk}}" role="button">Editar</a>
+        {% endif %}
+        {% if perms.Inventario.delete_incoming %}
+        <a name="" id="" style="background-image: linear-gradient(135deg, rgb(246, 61, 61) 0%, rgb(191, 22, 22) 100%); color: #f1f8fe;" class="btn" onclick="destroy('{{detalle_incoming.sn_batch_pk}}')" href="#" role="button">Eliminar</a>
+        {% endif %}
+    </div>
+    <div class="col-6">
+        <h5>Formulario Incoming Inspection</h5>
+        <a name="" id="" style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn" href="/detalle_form" role="button">Incoming Inspection</a>
+
+    </div>
+</div>
+{% endblock %}

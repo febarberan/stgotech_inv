@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>Mantenedor Estado Repuesto</h1>
+    <div class="mantenedor">
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Nombre Estado Repuesto</th>
+                      <th scope="col">Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for estado_repuesto in get_estado_repuesto %}
+                  <tr class="">
+                      <td>{{estado_repuesto.name_estado}}</td>
+                      <td>
+                          <a name="" id="" class="btn btn-primary" href="/editar_owner/{{estado_repuesto.id}}" role="button">Editar</a>
+                          <a name="" id="" class="btn btn-danger" onclick="destroy('{{estado_repuesto.id}}')" href="#" role="button">Eliminar</a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <div class="container">
+            <a name="" id="" class="btn btn-primary" href="/registrar_estado_repuesto/" role="button">Añadir Estado Repuesto</a>
+          </div>
+      </div>
+    </div>
+  </div>
+{% block js %}
+<script>
+    function destroy(id) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_estado_repuesto/" + id
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <h1>Resultados de la búsqueda</h1>
+
+  {% if query_consu %}
+  <p>Resultados para: "{{ query_consu }}"</p>
+  {% endif %}
+
+  {% include 'datatables/mostrar_consumos.html' %}
+
+{% endblock %}

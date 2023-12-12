@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <h1>Resultados de la búsqueda</h1>
+
+  {% if query_inco %}
+    <p>Resultados para: "{{ query_inco }}"</p>
+  {% endif %}
+
+  {% include 'datatables/mostrar_incoming.html' %}
+  
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% block js %}
+<script>
+    function destroy(stdf_pk) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer y eliminara los Incomings y Consumos relacionados.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_comat/" + stdf_pk
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+
+<!-- Detalle Comat Estilo Tabla -->
+<div class="container">
+    <div class="table-responsive">
+        <h2>Detalles Comat</h2>
+        <table class="table table-hover table-sm table-light table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Caracteristicas</th>
+                    <th scope="col">Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="">
+                    <td scope="row"><b>STDF</b></td>
+                    <td>{{detalle_comat.stdf_pk}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>ESTADO STDF</b></td>
+                    <td>{{detalle_comat.estado_fk}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>AWB</b></td>
+                    <td>{{detalle_comat.awb}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>HAWB</b></td>
+                    <td>{{detalle_comat.hawb}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>N° MANIFIESTO</b></td>
+                    <td>{{detalle_comat.num_manifiesto}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>CORRELATIVO INTERNO</b></td>
+                    <td>{{detalle_comat.corr_interno}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>PCS</b></td>
+                    <td>{{detalle_comat.pcs}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>PESO</b></td>
+                    <td>{{detalle_comat.peso}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>FECHA DE CONTROL</b></td>
+                    <td>{{detalle_comat.f_control}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>FECHA DE MANIFIESTO</b></td>
+                    <td>{{detalle_comat.f_manifiesto}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>FECHA DE RECEPCION</b></td>
+                    <td>{{detalle_comat.f_recepcion}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>FECHA DE STDF</b></td>
+                    <td>{{detalle_comat.f_stdf}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>FOB</b></td>
+                    <td>{{detalle_comat.fob}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>FLETE</b></td>
+                    <td>{{detalle_comat.flete}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>SEGURO</b></td>
+                    <td>{{detalle_comat.seguro}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>CIF</b></td>
+                    <td>{{detalle_comat.sum_cif}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>BODEGA</b></td>
+                    <td>{{detalle_comat.bodega_fk}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>ORIGEN</b></td>
+                    <td>{{detalle_comat.origen_fk}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>USUARIO DE INGRESO</b></td>
+                    <td>{{detalle_comat.usuario}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>PERTENECE A</b></td>
+                    <td>{{detalle_comat.compania_fk}}</td>
+                </tr>
+                <tr class="">
+                    <td scope="row"><b>OBSERVACIONES</b></td>
+                    <td>{{detalle_comat.observaciones}}</td>
+                </tr>
+                
+               
+            </tbody>
+        </table>
+        {% if perms.Inventario.change_comat %}
+        <a name="" id="" style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn" href="/editar_comat/{{detalle_comat.stdf_pk}}"  role="button">Editar</a>
+        {% endif %}
+        {% if perms.Inventario.delete_comat %}
+        <a name="" id="" style="background-image: linear-gradient(135deg, rgb(246, 61, 61) 0%, rgb(191, 22, 22) 100%); color: #f1f8fe;" class="btn" onclick="destroy('{{detalle_comat.stdf_pk}}')" href="#" role="button">Eliminar</a>
+        {% endif %}
+    </div>
+</div>
+  
+{% endblock %}

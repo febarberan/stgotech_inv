@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<div class="container m-2">
+    <h5>Formulario de Ingreso de Productos al Almacén - Incoming Inspection</h5>
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for form in form1 %}
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
+                <label for="">{{ form.label }}</label>
+                {{ form }}
+            </div>
+            {% endfor %}
+        </div>
+        {% if perms.Inventario.add_detalle_incoming %}
+        <input class="btn btn-primary m-2" type="submit" value="Guardar">
+        {% endif %}
+    </form>
+    <div>
+        <h4>Instrucciones de uso:</h4>
+        <p>En el Incoming Inspection Form, las 2 columnas de la derecha corresponden a: </p>
+        <img src="{%static 'img/materia.webp'%}" style="height: 300px; width: 600px; ;" alt="">
+        <hr>
+        <P>Por ejemplo si en el formulario ingresamos NO</P>
+        <img src="{%static 'img/NO.webp'%}" alt="">
+        <hr>
+        <p>El formulario quedaria de esta manera:</p>
+        <img src="{%static 'img/ejemplo.webp'%}" style="height: 50px; width: 600px; ;" alt="">
+
+    </div>
+</div>
+
+<style>
+.form1 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.form-control {
+    width: 50%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+/* Establece el ancho y la altura para todos los elementos <label> en el formulario */
+form label {
+    width: 310px;
+    height: 72px;
+    display: flex;
+}
+
+.reducido {
+    width: 60%;
+}
+
+.select2-selection.select2-selection--single {
+    width: 246.39px;
+    height: 38px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+}
+
+label {
+    display: flex;
+}
+</style>
+{% endblock %}

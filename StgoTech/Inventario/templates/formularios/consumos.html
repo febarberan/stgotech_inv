@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h5>Buscador Serial Number</h5>
+            <form action="{% url 'buscar_productos_consumos' %}" method="GET" autocomplete="off">
+                <input class="form-control" type="text" name="t" placeholder="Ingrese Serial Number">
+                <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Buscar">
+            </form>
+        </div>
+        <div class="col-6">
+            <h5>Formulario Orden de Consumo</h5>
+            <a style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;"  class="btn btn-primary" href="/orden_consumo" role="button">Ir a Orden de Consumo</a>
+        </div>
+    </div>
+</div>
+<hr> 
+<div class="container m-2">
+    <h5>Formulario de Consumos</h5>
+    <form onsubmit="return validateForm_consumo()" action="" method="post" autocomplete="off">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for consumo in form_consumos %}
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
+                <label>{{consumo.label}}</label>
+                {{consumo}}
+            </div>
+            {% endfor %}
+        </div>
+        <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Guardar">
+    </form>
+</div>
+
+
+<style>
+
+.reducido {
+    width: 60% ;
+}
+
+.select2-selection.select2-selection--single  {
+    width: 246.39px;
+    height: 38px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
+    
+}
+
+label {
+    display: flex;
+}
+
+
+</style>
+    
+{% block js %}
+<script>
+    function validateInput(inputValue, elementId) {
+        if (inputValue < 0) {
+            Swal.fire({
+                "title": "Error",
+                "text": "¡No puedes ingresar valores negativos!",
+                "icon": "warning",
+                "showCancelButton": true,
+                "confirmButtonText": "Ok",
+                "reverseButtons": true,
+                "confirmButtonColor": "red"
+            })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    // Puedes agregar código adicional si es necesario
+                    window.location.href = "#"
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+
+    function validateForm_consumo() {
+        // Validar cada input y recoger los resultados
+        var isInput1Valid = validateInput(parseFloat(document.getElementById("id_qty_extraida").value), "id_qty_extraida");
+
+        // Puedes agregar más lógica aquí para manejar los resultados si es necesario
+
+        // Verificar si todos los inputs son válidos
+        if (isInput1Valid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

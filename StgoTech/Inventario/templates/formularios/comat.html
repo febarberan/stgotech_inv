@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h5>Buscador STDF</h5>
+            <form action="{% url 'buscar_stdf' %}" method="GET" autocomplete="off">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 m-2">
+                        <select class="form-control" name="t">
+                            <option value="1">STDF</option>
+                            <option value="2">AWB</option>
+                            <option value="3">HAWB</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 m-2">
+                        <input class="form-control" type="text" name="c" placeholder="Ingrese STDF, AWB O HAWB">
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                        <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Buscar">
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+<hr>
+<div class="container m-2">
+    <h5>Formulario de Comat</h5>
+    <form id="formulario_comat" onsubmit="return validateForm_comat()" action="" method="post" autocomplete="off">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for comat in form_comat %}
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
+                <label>{{comat.label}}</label>
+                {{comat}}
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    {% if perms.Inventario.add_comat %}
+    <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Guardar">
+    {% endif %}
+</div>
+
+<style>
+
+.reducido {
+    width: 60% ;
+}
+
+.select2-selection.select2-selection--single  {
+    width: 246.39px;
+    height: 38px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
+    
+}
+
+label {
+    display: flex;
+}
+
+
+</style>
+
+{% block js %}
+<script>
+    function validateInput(inputValue, elementId) {
+        if (inputValue < 0) {
+            Swal.fire({
+                "title": "Error",
+                "text": "¡No puedes ingresar valores negativos!",
+                "icon": "warning",
+                "showCancelButton": true,
+                "confirmButtonText": "Ok",
+                "reverseButtons": true,
+                "confirmButtonColor": "red"
+            })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    // Puedes agregar código adicional si es necesario
+                    window.location.href = "#"
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+
+    function validateForm_comat() {
+        // Validar cada input y recoger los resultados
+        var isInput1Valid = validateInput(parseFloat(document.getElementById("id_stdf_pk").value), "id_stdf_pk");
+        var isInput2Valid = validateInput(parseFloat(document.getElementById("id_num_manifiesto").value), "id_num_manifiesto");
+        var isInput3Valid = validateInput(parseFloat(document.getElementById("id_corr_interno").value), "id_corr_interno");
+        var isInput4Valid = validateInput(parseFloat(document.getElementById("id_pcs").value), "id_pcs");
+        var isInput5Valid = validateInput(parseFloat(document.getElementById("id_peso").value), "id_peso");
+        var isInput6Valid = validateInput(parseFloat(document.getElementById("id_flete").value), "id_flete");
+        var isInput7Valid = validateInput(parseFloat(document.getElementById("id_seguro").value), "id_seguro");
+        var isInput8Valid = validateInput(parseFloat(document.getElementById("id_fob").value), "id_fob");
+
+        // Puedes agregar más lógica aquí para manejar los resultados si es necesario
+
+        // Verificar si todos los inputs son válidos
+        if (isInput1Valid && isInput2Valid && isInput3Valid && isInput4Valid && isInput5Valid && isInput6Valid && isInput7Valid && isInput8Valid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

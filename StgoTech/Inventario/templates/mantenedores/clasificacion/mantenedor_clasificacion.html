@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>Mantenedor Clasificación</h1>
+    <div class="mantenedor">
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Nombre Clasificación</th>
+                      <th scope="col">Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for clasificacion in get_clasificacion %}
+                  <tr class="">
+                      <td>{{clasificacion.name_clasificacion}}</td>
+                      <td>
+                          <a name="" id="" class="btn btn-primary" href="/editar_clasificacion/{{clasificacion.clasificacion_pk}}" role="button">Editar</a>
+                          <a name="" id="" class="btn btn-danger" onclick="destroy('{{clasificacion.clasificacion_pk}}')" href="#" role="button">Eliminar</a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <div class="container">
+            <a name="" id="" class="btn btn-primary" href="/registrar_clasificacion/" role="button">Añadir Clasificación</a>
+          </div>
+      </div>
+    </div>
+  </div>
+{% block js %}
+<script>
+    function destroy(clasificacion_pk) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_clasificacion/" + clasificacion_pk
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

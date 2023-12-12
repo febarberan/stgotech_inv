@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container m-2">
+    <h5>Formulario de Consumidor</h5>
+    <form id="formulario_categoria" onsubmit="return validateForm_consumidor()" action="" method="post">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for consumidor in form_reg_consumidor %}
+            <div class="col-6 p-2">
+                <label>{{consumidor.label}}</label>
+                {{consumidor}}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Guardar">
+</div>
+{% block js %}
+<script>
+    function validateForm_consumidor() {
+        var inputValue = document.getElementById("nombre").value;
+        var inputValue1 = document.getElementById("apellido").value;
+        var inputValue2 = document.getElementById("email").value;
+        if (inputValue < 0) {
+            Swal.fire({
+            "title": "Error",
+            "text": "¡No puedes ingresar valores negativos!",
+            "icon": "warning",
+            "showCancelButton": true,
+            "confirmButtonText": "Ok",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "#"
+                }
+            })
+        return false;
+      }
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<body>
+    <h1>Editar Detalle Incoming Form</h1>
+    
+    <form onsubmit="return validateForm_detallesForm()" method="post">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for field in form %}
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+            {% endfor %}
+        </div>
+        <input class="btn btn-primary" type="submit" value="Guardar">
+    </form>
+
+
+</body>
+{% block js %}
+<script>
+    function validateForm_detallesForm() {
+        var inputValue = document.getElementById("#").value;
+        if (inputValue < 0) {
+            Swal.fire({
+            "title": "Error",
+            "text": "¡No puedes ingresar valores negativos!",
+            "icon": "warning",
+            "showCancelButton": true,
+            "confirmButtonText": "Ok",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "#"
+                }
+            })
+        return false;
+      }
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

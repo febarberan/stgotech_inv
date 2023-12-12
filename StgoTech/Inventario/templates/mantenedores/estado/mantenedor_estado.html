@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>Mantenedor Estado</h1>
+    <div class="mantenedor">
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Nombre Estado</th>
+                      <th scope="col">Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for estado in get_estado %}
+                  <tr class="">
+                      <td>{{estado.estado}}</td>
+                      <td>
+                          <a name="" id="" class="btn btn-primary" href="/editar_estado/{{estado.estado_pk}}" role="button">Editar</a>
+                          <a name="" id="" class="btn btn-danger" onclick="destroy('{{estado.estado_pk}}')" href="#" role="button">Eliminar</a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <div class="container">
+            <a name="" id="" class="btn btn-primary" href="/registrar_estado/" role="button">Añadir Estado</a>
+          </div>
+      </div>
+    </div>
+  </div>
+{% block js %}
+<script>
+    function destroy(estado_pk) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_estado/" + estado_pk
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+    <h1>Mantenedor Owner</h1>
+    <div class="mantenedor">
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Nombre Owner</th>
+                      <th scope="col">Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for owner in get_owner %}
+                  <tr class="">
+                      <td>{{owner.name_owner}}</td>
+                      <td>
+                          <a name="" id="" class="btn btn-primary" href="/editar_owner/{{owner.owner_pk}}" role="button">Editar</a>
+                          <a name="" id="" class="btn btn-danger" onclick="destroy('{{owner.owner_pk}}')" href="#" role="button">Eliminar</a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <div class="container">
+            <a name="" id="" class="btn btn-primary" href="/registrar_owner/" role="button">Añadir Owner</a>
+          </div>
+      </div>
+    </div>
+  </div>
+{% block js %}
+<script>
+    function destroy(owner_pk) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_owner/" + owner_pk
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+{% endblock %}

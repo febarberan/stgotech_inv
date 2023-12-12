@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% block js %}
+<script>
+    function destroy(bodega_pk) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_bodega/" + bodega_pk
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+<div class="container">
+    <h1>Mantenedor Bodega</h1>
+    <div class="mantenedor">
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th scope="col">Nombre Bodega</th>
+                      <th scope="col">Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for bodega in get_bodega %}
+                  <tr class="">
+                      <td>{{bodega.name_bodega}}</td>
+                      <td>
+                          <a name="" id="" class="btn btn-primary" href="/editar_bodega/{{bodega.bodega_pk}}" role="button">Editar</a>
+                          <a name="" id="" class="btn btn-danger" onclick="destroy('{{bodega.bodega_pk}}')"  href="#" role="button">Eliminar</a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <div class="container">
+            <a name="" id="" class="btn btn-primary" href="/registrar_bodega/" role="button">Añadir Bodega</a>
+          </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

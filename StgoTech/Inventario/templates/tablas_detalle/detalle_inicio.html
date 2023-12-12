@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<h2>Detalles STDF {{comat_data.stdf_pk}}</h2>
+{% if comat_data.estado_fk_id == 2 %}
+    <h4>Estado: <span style="color: red;">{{comat_data.estado_fk}}</span></h4>
+{% else %}
+    <h4>Estado: <span style="color: green;">{{comat_data.estado_fk}}</span></h4>
+{% endif %}
+
+
+<div class="row p-2">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <tr>
+                <th>STDF:</th>
+                <td>{{comat_data.stdf_pk}}</td>
+            </tr>
+            <tr>
+                <th>AWB:</th>
+                <td>{{comat_data.awb}}</td>
+            </tr>
+            <tr>
+                <th>HAWB:</th>
+                <td>{{comat_data.hawb}}</td>
+            </tr>
+            <tr>
+                <th>N° MANIFIESTO:</th>
+                <td>{{comat_data.num_manifiesto}}</td>
+            </tr>
+            <tr>
+                <th>CORRELATIVO INTERNO:</th>
+                <td>{{comat_data.corr_interno}}</td>
+            </tr>
+            <tr>
+                <th>PIEZAS:</th>
+                <td>{{comat_data.pcs}}</td>
+            </tr>
+            <tr>
+                <th>PESO:</th>
+                <td>{{comat_data.peso}}</td>
+            </tr>
+            <tr>
+                <th>FECHA DE CONTROL:</th>
+                <td>{{comat_data.f_control}}</td>
+            </tr>
+            <tr>
+                <th>FECHA DE MANIFIESTO:</th>
+                <td>{{comat_data.f_manifiesto}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <tr>
+                <th>FECHA DE RECEPCION:</th>
+                <td>{{comat_data.f_recepcion}}</td>
+            </tr>
+            <tr>
+                <th>FECHA DE STDF:</th>
+                <td>{{comat_data.f_stdf}}</td>
+            </tr>
+            <tr>
+                <th>BODEGA:</th>
+                <td>{{comat_data.bodega_fk}}</td>
+            </tr>
+            <tr>
+                <th>FOB:</th>
+                <td>{{comat_data.fob}}</td>
+            </tr>
+            <tr>
+                <th>FLETE:</th>
+                <td>{{comat_data.flete}}</td>
+            </tr>
+            <tr>
+                <th>SEGURO:</th>
+                <td>{{comat_data.seguro}}</td>
+            </tr>
+            <tr>
+                <th>CIF:</th>
+                <td>{{comat_data.sum_cif}}</td>
+            </tr>
+            <tr>
+                <th>ORIGEN:</th>
+                <td>{{comat_data.origen_fk}}</td>
+            </tr>
+            <tr>
+                <th>OBSERVACION:</th>
+                <td>{{comat_data.observaciones}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<h3>INCOMINGS</h3>
+<div class="tabla-responsive">
+    <!-- <input id="input1" oninput="sincronizarInputs(this, 'input2')" type="search" class="" placeholder="" aria-controls="tabla-detalle-incoming"> -->
+    <table id="tabla-detalle-incoming" class="display" id="search-incoming">
+        <thead>
+            <tr>
+                <th>SN</th>
+                <th>PN</th>
+                <th>FEC INCOMING</th>
+                <th>Descripción</th>
+                <th>P.O</th>
+                <th>QTY</th>
+                <th>UPC</th>
+                <th>TUPC</th>
+                <th>FEC VEN</th>
+                <th>Saldo</th>
+                <th>Categoria</th>
+                <th>Clasificación</th>
+                <th>Ubicación</th>
+                <th>UOM</th>
+                <th>Owner</th>
+                <th>Condición</th>
+                <th>Ficha</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<br>
+
+<h3>CONSUMOS</h3>
+<div class="tabla-responsive">
+    <!-- <input id="input2" oninput="sincronizarInputs(this, 'input1')" type="search" class="" placeholder="" aria-controls="tabla-detalle-consumos"> -->
+    <table id="tabla-detalle-consumos" class="display">
+        <thead>
+            <tr>
+                <th>SN/BATCH NUMBER</th>
+                <th>Fecha Transaccion</th>
+                <th>Qty Extraidas</th>
+                <th>Matricula Aeronave</th>
+                <th>Observacion</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    function sincronizarInputs(input, targetId) {
+        var valorInput = input.value;
+        var targetInput = document.getElementById(targetId);
+        targetInput.value = valorInput;
+    }
+</script>
+
+
+
+  
+{% endblock %}

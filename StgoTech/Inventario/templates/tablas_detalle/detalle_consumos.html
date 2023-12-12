@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% block js %}
+<script>
+    function destroy(consumo_pk) {
+        Swal.fire({
+            "title": "¿Estas Seguro?",
+            "text": "Esta opcion no se puede deshacer.",
+            "icon": "warning",
+            "showCancelButton": true,
+            "cancelButtonText": "Cancelar",
+            "confirmButtonText": "Si, Eliminar",
+            "reverseButtons": true,
+            "confirmButtonColor": "red"
+        })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_consumo/" + consumo_pk
+                }
+            })
+
+    }
+
+</script>
+{% endblock %}
+
+<div class="row p-2">
+    <div class="col-md-6 p-2">
+        <h2>Detalles Consumos</h2>
+        <br>
+        <table class="table table-striped table-sm">
+            <tr hidden>
+                <th class="col-sm-4">Consumo_pk:</th>
+                <td class="col-sm-8">{{detalle_consumos.consumo_pk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Serial / Number:</th>
+                <td class="col-sm-8">{{detalle_consumos.incoming_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Categoria:</th>
+                <td class="col-sm-8">{{incoming_data.categoria_fk }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Part Number:</th>
+                <td class="col-sm-8">{{incoming_data.part_number }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Fecha de Transaccion:</th>
+                <td class="col-sm-8">{{detalle_consumos.f_transaccion}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">QTY :</th>
+                <td class="col-sm-8">{{incoming_data.qty}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">QTY Extraida:</th>
+                <td class="col-sm-8">{{detalle_consumos.qty_extraida}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Saldo:</th>
+                <td class="col-sm-8">{{incoming_data.saldo}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Matricula Aeronave:</th>
+                <td class="col-sm-8">{{detalle_consumos.matricula_aeronave}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Ubicación:</th>
+                <td class="col-sm-8">{{incoming_data.ubicacion_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Consumidor:</th>
+                <td class="col-sm-8">{{detalle_consumos.consumidor_fk}}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-4">Observaciones:</th>
+                <td class="col-sm-8">{{detalle_consumos.observaciones}}</td>
+            </tr>
+        </table>
+        <a name="" id="" style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn" href="/editar_consumo/{{detalle_consumos.consumo_pk}}" role="button">Editar</a>
+        <a name="" id="" style="background-image: linear-gradient(135deg, rgb(246, 61, 61) 0%, rgb(191, 22, 22) 100%); color: #f1f8fe;" class="btn" onclick="destroy('{{detalle_consumos.consumo_pk}}')" href="#" role="button">Eliminar</a>
+    </div>
+</div>
+{% endblock %}

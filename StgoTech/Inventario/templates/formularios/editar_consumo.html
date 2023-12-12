@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<body>
+    <h1>Editar Consumo</h1>
+    
+    <form onsubmit="return validateForm_consumo()" method="post">
+        {% csrf_token %}
+        <div class="row p-2">
+            {% for field in form %}
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+            {% endfor %}
+        </div>
+        <input class="btn btn-primary" type="submit" value="Guardar">
+    </form>
+
+
+</body>
+{% block js %}
+<script>
+    function validateInput(inputValue, elementId) {
+        if (inputValue < 0) {
+            Swal.fire({
+                "title": "Error",
+                "text": "¡No puedes ingresar valores negativos!",
+                "icon": "warning",
+                "showCancelButton": true,
+                "confirmButtonText": "Ok",
+                "reverseButtons": true,
+                "confirmButtonColor": "red"
+            })
+            .then(function (result) {
+                if (result.isConfirmed) {
+                    // Puedes agregar código adicional si es necesario
+                    window.location.href = "#"
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+
+    function validateForm_consumo() {
+        // Validar cada input y recoger los resultados
+        var isInput1Valid = validateInput(parseFloat(document.getElementById("id_qty_extraida").value), "id_qty_extraida");
+
+        // Puedes agregar más lógica aquí para manejar los resultados si es necesario
+
+        // Verificar si todos los inputs son válidos
+        if (isInput1Valid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

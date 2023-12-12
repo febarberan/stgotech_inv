@@ -1,0 +1,995 @@
+<script>
+
+    $(document).ready(function () {
+        var goTopButton = $("#goTopButton");
+
+        // Inicialmente oculta el botón
+        goTopButton.hide();
+
+        // Mostrar el botón cuando el usuario desplaza hacia abajo 200px
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) {
+                goTopButton.fadeIn(100); // Animación de desvanecimiento en 300ms
+            } else {
+                goTopButton.fadeOut(100); // Animación de desvanecimiento en 300ms
+            }
+        });
+
+        // Volver arriba cuando se hace clic en el botón
+        goTopButton.click(function () {
+            $("html, body").animate({ scrollTop: 0 }, "fast");
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var Categoria = document.getElementById('id_categoria_fk');
+        var batch = document.getElementById('id_batch_pk');
+
+
+        function disableField(field) {
+            field.disabled = true;
+            field.parentNode.style.display = 'none';
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.parentNode.style.display = 'block';
+        }
+
+        Categoria.addEventListener('change', function () {
+            if (Categoria.value === '1' || Categoria.value === '2' || Categoria.value === '') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+                disableField(batch);
+
+            } else {
+                enableField(batch);
+
+            }
+        });
+
+        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
+        if (Categoria.value === '1' || Categoria.value === '2' || Categoria.value === '') {
+            disableField(batch);
+
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var item18 = document.getElementById('id_form1-item18');
+        var item18tsn = document.getElementById('id_form1-n_item18tsn');
+        var item18tso = document.getElementById('id_form1-n_item18tso');
+        var item18csn = document.getElementById('id_form1-n_item18csn');
+        var item18cso = document.getElementById('id_form1-n_item18cso');
+
+        function disableField(field) {
+            field.disabled = true;
+            field.parentNode.style.display = 'none';
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.parentNode.style.display = 'block';
+        }
+
+        item18.addEventListener('change', function () {
+            if (item18.value === '0') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+                disableField(item18tsn);
+                disableField(item18tso);
+                disableField(item18csn);
+                disableField(item18cso);
+            } else {
+                enableField(item18tsn);
+                enableField(item18tso);
+                enableField(item18csn);
+                enableField(item18cso);
+            }
+        });
+
+        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item18 es "NO"
+        if (item18.value === '0') {
+            disableField(item18tsn);
+            disableField(item18tso);
+            disableField(item18csn);
+            disableField(item18cso);
+
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var item13 = document.getElementById('id_form1-item13');
+        var n_item13 = document.getElementById('id_form1-n_item13');
+
+
+        function disableField(field) {
+            field.disabled = true;
+            field.parentNode.style.display = 'none';
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.parentNode.style.display = 'block';
+        }
+
+        item13.addEventListener('change', function () {
+            if (item13.value === '0' || item13.value === '2') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+                disableField(n_item13);
+
+            } else {
+                enableField(n_item13);
+
+            }
+        });
+
+        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
+        if (item13.value === '0' || item13.value === '2') {
+            disableField(n_item13);
+
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var item15 = document.getElementById('id_form1-item15');
+        var n_item15 = document.getElementById('id_form1-n_item15');
+
+
+        function disableField(field) {
+            field.disabled = true;
+            field.parentNode.style.display = 'none';
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.parentNode.style.display = 'block';
+        }
+
+        item15.addEventListener('change', function () {
+            if (item15.value === '0' || item15.value === '2') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+                disableField(n_item15);
+
+            } else {
+                enableField(n_item15);
+
+            }
+        });
+
+        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
+        if (item15.value === '0' || item15.value === '2') {
+            disableField(n_item15);
+
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var item16 = document.getElementById('id_form1-item16');
+        var n_item16 = document.getElementById('id_form1-n_item16');
+
+
+        function disableField(field) {
+            field.disabled = true;
+            field.parentNode.style.display = 'none';
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.parentNode.style.display = 'block';
+        }
+
+        item16.addEventListener('change', function () {
+            if (item16.value === '0' || item16.value === '2') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+                disableField(n_item16);
+
+            } else {
+                enableField(n_item16);
+
+            }
+        });
+
+        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
+        if (item16.value === '0' || item16.value === '2') {
+            disableField(n_item16);
+
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var item17 = document.getElementById('id_form1-item17');
+        var n_item17 = document.getElementById('id_form1-n_item17');
+
+
+        function disableField(field) {
+            field.disabled = true;
+            field.parentNode.style.display = 'none';
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.parentNode.style.display = 'block';
+        }
+
+        item17.addEventListener('change', function () {
+            if (item17.value === '0' || item17.value === '2') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+                disableField(n_item17);
+
+            } else {
+                enableField(n_item17);
+
+            }
+        });
+
+        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
+        if (item17.value === '0' || item17.value === '2') {
+            disableField(n_item17);
+
+        }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var item22 = document.getElementById('id_form1-item22');
+        var n_item22 = document.getElementById('id_form1-n_item22');
+
+
+        function disableField(field) {
+            field.disabled = true;
+            field.parentNode.style.display = 'none';
+        }
+
+        function enableField(field) {
+            field.disabled = false;
+            field.parentNode.style.display = 'block';
+        }
+
+        item22.addEventListener('change', function () {
+            if (item22.value === '0' || item22.value === '2') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+                disableField(n_item22);
+
+            } else {
+                enableField(n_item22);
+
+            }
+        });
+
+        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
+        if (item22.value === '0' || item22.value === '2') {
+            disableField(n_item22);
+
+        }
+    });
+
+
+    // $(".selector").flatpickr(optional_config);
+
+    flatpickr("input[type=datetime-local]", {
+        enableTime: true,
+        allowInput: true,
+        ariaDateFormat: 'd-m-Y H:i',
+        dateFormat: "Y-m-d H:i",
+        time_24hr: true,
+    });
+
+    flatpickr("input[type=date]", {
+        allowInput: true,
+        altFormat: 'd-m-Y',
+        dateFormat: "Y-m-d",
+    });
+
+
+    $(document).ready(function () {
+        var dataTable = $('#tabla-incoming').DataTable({
+            // scrollY: true,
+            // scrollX: true,
+            searching: false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{% url 'obtener_datos_incoming' %}",
+                "type": "GET",
+                "data": function (d) {
+                    d.e = '{{ query_inco }}';
+                    d.t = '{{ filtro}}';
+                }
+
+            },
+            "columns": [
+                // Define las columnas que deseas mostrar
+                { "data": "serial_number" },
+                { "data": "batch_number" },
+                { "data": "part_number" },
+                { "data": "descripcion" },
+                { "data": "qty" },
+                { "data": "f_vencimiento" },
+                { "data": "usuario" },
+                { "data": "saldo" },
+
+                {
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+                        var serial_number = data.serial_number;
+                        var batch_number = data.batch_number;
+                        var url = "";
+
+                        if (serial_number) {
+                            url = "/detalle_incoming/" + serial_number + "/";
+                        } else if (batch_number) {
+                            url = "/detalle_incoming/" + batch_number + "/";
+                        } else {
+                            // Manejar el caso en que ni serial_number ni batch_number estén presentes
+                            // Puedes configurar una URL predeterminada o mostrar un mensaje de error.
+                        }
+
+                        return url ? '<a href="' + url + '" class="ver-detalles" data-sn_batch_pk="' + serial_number + '">Detalles</a>' : 'URL no válida';
+                    }
+                }
+            ]
+        });
+    });
+
+
+    $(document).ready(function () {
+        var dataTable = $('#tabla-comat').DataTable({
+            // scrollY: true,
+            // scrollX: true,
+            searching: false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{% url 'obtener_datos_comat' %}",
+                "type": "GET",
+                "data": function (d) {
+                    d.c = '{{ query_comat }}';
+                    d.t = '{{ filtro}}';
+                }
+
+            },
+            "columns": [
+                // Define las columnas que deseas mostrar
+                { "data": "stdf_pk" },
+                { "data": "awb" },
+                { "data": "hawb" },
+                { "data": "num_manifiesto" },
+                { "data": "sum_cif" },
+                { "data": "bodega_fk" },
+                { "data": "usuario" },
+                {
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+                        var stdf_pk = data.stdf_pk;
+                        var url = "/detalle_comat/" + stdf_pk + "/";
+                        return '<a href="' + url + '" class="ver-detalles" data-stdf_pk="' + stdf_pk + '">Ver Detalles</a>';
+                    }
+                },
+            ]
+        });
+    });
+
+
+
+
+    $(document).ready(function () {
+        $('#id_form1-incoming_fk').select2({ 'placeholder': 'Seleccione Serial Number o Batch Number' })
+        $('#id_bodega_fk').select2({ 'placeholder': 'Seleccione Bodega' })
+        $('#id_origen_fk').select2({ 'placeholder': 'Seleccione Origen' })
+        $('#id_ubicacion_fk').select2({ 'placeholder': 'Seleccione Ubicación' })
+        $('#id_clasificacion_fk').select2({ 'placeholder': 'Seleccione Clasificación' })
+        $('#id_uom_fk').select2({ 'placeholder': 'Seleccione UOM' })
+        $('#id_condicion_fk').select2({ 'placeholder': 'Seleccione Condición' })
+        $('#id_ficha_fk').select2({ 'placeholder': 'Seleccione N° de Ficha' })
+        // $('#id_stdf_fk').select2({ 'placeholder': 'Seleccione STDF' })
+        // $('#id_incoming_fk').select2({ 'placeholder': 'Seleccione Serial/Batch Number' })
+        $('#id_owner_fk').select2({ 'placeholder': 'Seleccione Owner' })
+
+        $('#id_consumidor_fk').select2({ 'placeholder': 'Seleccione Consumidor' })
+        $('#id_compania_fk').select2({ 'placeholder': 'Seleccione Compañia' })
+    });
+    // Test
+    $(document).ready(function () {
+        // Inicializa el elemento select2
+        $('#id_stdf_fk').select2({
+            placeholder: 'Selecciona una opción',
+            ajax: {
+                url: '/obtener_stdf_incoming/', // La URL donde obtendrás los datos desde Django
+                dataType: 'json',
+                // delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term // Enviar el término de búsqueda como parámetro de consulta
+                    };
+                },
+                processResults: function (data) {
+                    if (data.stdf_data) {
+                        return {
+                            results: [
+                                {
+                                    id: data.stdf_data.stdf_pk,
+                                    text: data.stdf_data.stdf_pk,
+                                }
+                                // Agrega más campos del objeto Comat si es necesario
+                            ],
+                        };
+                    } else {
+                        return { results: [] }; // No se encontraron resultados
+                    }
+                },
+                cache: true,
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error en la solicitud AJAX:', errorThrown);
+                }
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#id_incoming_fk').select2({
+            placeholder: 'Seleccione Serial Number o Batch Number',
+            ajax: {
+                url: '/obtener_sn_consumo/',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    if (data.sn_data) {
+                        var results = data.sn_data.map(function (item) {
+                            // Dividir la cadena en dos partes en función del guion
+                            var parts = item.sn_batch_pk.split('SN:').pop().split(' - ');
+
+                            // Tomar la primera parte (antes del guion)
+                            var id = parts[0];
+
+                            return {
+                                id: id,
+                                text: item.sn_batch_pk,
+                                // Agrega más campos del objeto Comat si es necesario
+                            };
+                        });
+
+                        return { results: results };
+                    } else {
+                        return { results: [] };
+                    }
+                },
+                cache: true,
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error en la solicitud AJAX:', errorThrown);
+                    console.log('Datos de la solicitud AJAX:', xhr.responseText);
+                }
+            }
+        });
+    });
+
+
+
+
+    $(document).ready(function () {
+        var dataTable = $('#tabla-consumos').DataTable({
+            // scrollY: true,
+            // scrollX: true,
+            searching: false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{% url 'obtener_datos_consumos' %}",
+                "type": "GET",
+                "data": function (d) {
+                    d.t = '{{ query_consu }}';
+                }
+
+            },
+            "columns": [
+                // Define las columnas que deseas mostrar
+                { "data": "consumo_pk" },
+                { "data": "incoming_fk" },
+                { "data": "f_transaccion" },
+                { "data": "orden_consumo" },
+                { "data": "matricula_aeronave" },
+                { "data": "qty_extraida" },
+                { "data": "usuario" },
+                {
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+                        var consumo_pk = data.consumo_pk;
+                        var url = "/detalle_consumos/" + consumo_pk + "/";
+                        return '<a href="' + url + '" class="ver-detalles" data-consumo_pk="' + consumo_pk + '">Detalle</a>';
+                    }
+                }
+            ]
+        });
+    });
+    // // Test
+    //         $(document).ready(function () {
+    //             // Inicializa el elemento select2
+    //             $('#id_stdf_fk').select2({
+    //                 placeholder: 'Selecciona una opción',
+    //                 ajax: {
+    //                     url: '/obtener_stdf_incoming/', // La URL donde obtendrás los datos desde Django
+    //                     dataType: 'json',
+    //                     // delay: 250,
+    //                     data: function (params) {
+    //                         return {
+    //                             q: params.term // Enviar el término de búsqueda como parámetro de consulta
+    //                         };
+    //                     },
+    //                     processResults: function (data) {
+    //                         // Modifica la estructura de los resultados si es necesario
+    //                         const modifiedResults = data.stdf_data.map(item => {
+    //                             return {
+    //                                 id: item.stdf_pk,
+    //                                 text: item.stdf_pk,
+    //                             };
+    //                         });
+    //                         console.log('modifiedResults:', modifiedResults);
+
+    //                         return {
+    //                             results: modifiedResults
+    //                         };
+    //                     },
+    //                     cache: false,
+    //                     error: function (xhr, textStatus, errorThrown) {
+    //                         console.error('Error en la solicitud AJAX:', errorThrown);
+    //                     }
+    //                 }
+    //             });
+    //         });
+
+
+
+
+    $(document).ready(function () {
+        var dataTableIncoming = $('#tabla-inicio').DataTable({
+            scrollY: true,
+            scrollX: true,
+            searching: false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{% url 'buscar_datos_inicio' %}",
+                "type": "GET",
+                "data": function (d) {
+                    d.n = '{{ query_inicio }}';
+                    d.f = '{{ filtro }}';
+                },
+                "dataSrc": "data_incoming"
+            },
+            "columns": [
+                // Define las columnas que deseas mostrar para Incoming
+                { "data": "serial_number" },
+                { "data": "batch_number" },
+                { "data": "part_number" },
+                { "data": "descripcion" },
+                { "data": "stdf_fk__stdf_pk" },
+                { "data": "qty" },
+                { "data": "qty_extraida_total" },
+                { "data": "saldo" },
+                { "data": "stdf_fk__awb" },
+                { "data": "ubicacion_fk__name_ubicacion" },
+                { "data": "f_vencimiento" },
+                {
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+
+                        var stdf_fk__stdf_pk = data.stdf_fk__stdf_pk;
+                        var url = "/detalle_inicio/" + stdf_fk__stdf_pk + "/";
+                        return '<a href="' + url + '" class="ver-detalles" data-stdf_fk__stdf_pk="' + stdf_fk__stdf_pk + '">Detalles</a>';
+                    }
+                }
+            ]
+
+        });
+
+        var dataTableComatsSinIncoming = $('#tabla-inicio-no-incomings').DataTable({
+            searching: true,
+            "processing": true,
+            "serverSide": false,
+            "ajax": {
+                "url": "{% url 'buscar_datos_inicio' %}",
+                "type": "GET",
+                "data": function (d) {
+                    d.n = '{{ query_inicio }}';
+                },
+                "dataSrc": "data_comats_sin_incoming",
+
+            },
+            "columns": [
+                // Define las columnas que deseas mostrar para Comats sin Incoming
+                { "data": "stdf_pk" },
+                { "data": "awb" },
+                { "data": "hawb" },
+                { "data": "prioridad" },
+
+            ],
+
+
+
+        });
+        new $.fn.dataTable.Buttons(dataTableComatsSinIncoming, {
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        });
+
+        // Agrega los botones al contenedor deseado (por ejemplo, en un div con la clase "buttons")
+        dataTableComatsSinIncoming.buttons().container().appendTo('.buttons');
+    });
+
+
+
+    // Configuración del DataTable secundario para comat_data
+    $(document).ready(function () {
+        var url = window.location.pathname;
+        var stdf_pk = url.split('/').slice(-2, -1)[0];
+
+
+        // Configuración del DataTable secundario para comat_data
+        var incomingDataTable = $('#tabla-detalle-incoming').DataTable({
+            searching: true,
+            searchParams: ["search"],
+            responsive: true,
+            "processing": true,
+            "serverSide": false,
+            "search": {
+                "regex": true, // Habilita la búsqueda como expresión regular
+                "smart": false // Deshabilita la búsqueda inteligente
+            },
+            "ajax": {
+                "url": "{% url 'detalle_inicio' 0 %}".replace(0, stdf_pk),
+                "type": "GET",
+                "data": function (d) {
+                    d.format = 'json';
+                },
+                "dataSrc": function (json) {
+                    return json.incoming_data;
+                }
+            },
+            "columns": [
+                { "data": "sn_batch_pk", "width": "10%" },
+                { "data": "part_number", "width": "10%" },
+                { "data": "f_incoming", "width": "10%" },
+                { "data": "descripcion", "width": "10%" },
+                { "data": "po", "width": "10%" },
+                { "data": "qty", "width": "10%" },
+                { "data": "u_purchase_cost", "width": "10%" },
+                { "data": "total_u_purchase_cost", "width": "10%" },
+                { "data": "f_vencimiento", "width": "10%" },
+                { "data": "saldo", "width": "10%" },
+                { "data": "categoria_fk", "width": "10%" },
+                { "data": "clasificacion_fk", "width": "10%" },
+                { "data": "ubicacion_fk", "width": "10%" },
+                { "data": "uom_fk", "width": "10%" },
+                { "data": "owner_fk", "width": "10%" },
+                { "data": "condicion_fk", "width": "10%" },
+                { "data": "ficha_fk", "width": "10%" },
+                { "data": "observaciones", "width": "10%" },
+            ],
+
+        });
+
+        $('input[aria-controls="tabla-detalle-incoming"]').on('input', function () {
+            var searchTerm = $(this).val();
+            incomingDataTable.search(searchTerm).draw();
+        });
+
+        // Configuración del DataTable secundario para consumos_data
+        var consumosDataTable = $('#tabla-detalle-consumos').DataTable({
+            searching: true,
+            responsive: true,
+            "processing": true,
+            "serverSide": false,
+            "search": {
+                "regex": true, // Habilita la búsqueda como expresión regular
+                "smart": false // Deshabilita la búsqueda inteligente
+            },
+            "ajax": {
+                "url": "{% url 'detalle_inicio' 0 %}".replace(0, stdf_pk),
+                "type": "GET",
+                "data": function (c) {
+                    c.format = 'json';
+                },
+                "dataSrc": "consumos_data"
+            },
+            "columns": [
+                { "data": "incoming_fk", "width": "10%" },
+                { "data": "f_transaccion", "width": "10%" },
+                { "data": "qty_extraida", "width": "10%" },
+                { "data": "matricula_aeronave", "width": "10%" },
+                { "data": "observaciones", "width": "10%" },
+            ],
+
+
+
+
+        });
+
+        $('input[aria-controls="tabla-detalle-incoming"]').on('input', function () {
+            var searchTerm = $(this).val();
+            incomingDataTable.search(searchTerm).draw();
+            consumosDataTable.search(searchTerm).draw();
+        });
+
+        $('input[aria-controls="tabla-detalle-consumos"]').on('input', function () {
+            var searchTerm = $(this).val();
+            incomingDataTable.search(searchTerm).draw();
+            consumosDataTable.search(searchTerm).draw();
+        });
+
+
+
+
+
+    });
+    // Agrega un controlador de eventos para cerrar la ventana emergente cuando se hace clic en cualquier parte del documento
+    document.addEventListener('click', function (event) {
+        const modal = document.getElementById('myModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart;
+
+    // Realiza la petición AJAX para obtener los datos
+    fetch('/get_chart_data/')  // Cambia la URL según tu configuración
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.prioridad);
+            const counts = data.map(item => item.count);
+            const colors = data.map(item => item.color);
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(item => item.prioridad),
+                    datasets: [{
+                        label: 'Cuenta Total de Prioridad por STDF',
+                        data: counts,
+                        backgroundColor: colors, // Personaliza según tus necesidades
+                        borderColor: 'rgba(75, 192, 192, 1)', // Personaliza según tus necesidades
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    // Otras opciones de configuración
+                    // Configuración del gráfico
+                    onClick: function (event, elements) {
+                        if (elements[0]) {
+                            const clickedLabel = labels[elements[0].index];
+                            const modal = document.getElementById('myModal');
+                            const modalContent = document.getElementById('modal-content');
+                            // Agrega un controlador de eventos para cerrar la ventana emergente
+                            const closeBtn = document.querySelector('.close');
+                            closeBtn.addEventListener('click', function () {
+                                modal.style.display = 'none';
+                            });
+                            // Consulta los pk de elementos relacionados con la prioridad
+                            fetch(`/get_pks_by_priority/${clickedLabel}/`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const stdfPkList = data.stdf_pk;
+
+                                    // Personaliza el mensaje de la ventana emergente
+                                    let message = `Los elementos con prioridad ${clickedLabel} tienen los siguientes stdf_pk en fila:<br>`;
+                                    for (const stdfPk of stdfPkList) {
+                                        message += `${stdfPk}, `;
+                                    }
+                                    message = message.slice(0, -2); // Eliminar la coma final
+                                    modalContent.innerHTML = message;
+                                })
+                                .catch(error => {
+                                    console.error('Error al obtener los stdf_pk:', error);
+                                });
+
+                            // Mostrar la ventana emergente
+                            modal.style.display = 'block';
+                        }
+                    }
+                }
+            });
+        });
+
+    // OTRO GRÁFICO
+
+    // fetch('/get_chart_data_repuesto_owner/')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         const ctx = document.getElementById('myChart1').getContext('2d');
+    //         new Chart(ctx, {
+    //             type: 'bar',
+    //             data: {
+    //                 labels: data.labels,
+    //                 datasets: [{
+    //                     label: 'Part Numbers por Owner',
+    //                     data: data.values,
+    //                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
+    //                     borderColor: 'rgba(75, 192, 192, 1)',
+    //                     borderWidth: 1
+    //                 }]
+    //             },
+    //             options: {
+    //                 scales: {
+    //                     y: {
+    //                         beginAtZero: true
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //     });
+
+    fetch('/get_chart_data_repuesto_owner/')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('myChart1').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',  // Cambiar el tipo de gráfico a 'pie' para un gráfico de torta
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Part Numbers por Owner',
+                        data: data.values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                            // Puedes agregar más colores de fondo si tienes más datos
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                            // Asegúrate de que haya el mismo número de colores de borde
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'KPI - Cantidad de Part Number por Owner'
+                    }
+                }
+            });
+        });
+
+    // Otro Gráfico
+
+    fetch('/top_10_lowest_saldo/')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('myChart2').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.part_numbers,
+                    datasets: [{
+                        label: 'Saldos',
+                        data: data.saldos,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+    // Otro grafico
+
+    fetch('/soon_to_expire_parts/')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('myChart3').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',  // Utilizamos un gráfico de barras horizontales
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Part Numbers Próximos a Vencer',
+                        data: data.part_numbers,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+    // Otro grafico
+
+    fetch('/monthly_weight_chart/')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('myChart4').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Peso Total',
+                        data: data.weights,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+    //  Otro grafico
+
+    fetch('/monthly_cif_chart/')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('myChart5').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'CIF (Transporte) Mensual',
+                        data: data.cif_values,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+    //  Otro grafico
+
+    fetch('/state_pie_chart/')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('myChart6').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.stdf_counts,
+                        backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)'],
+                    }]
+                },
+            });
+        });
+</script>
