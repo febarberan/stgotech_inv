@@ -128,7 +128,7 @@ WSGI_APPLICATION = 'StgoTech.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'inventario_stgotech', 
+        'NAME': 'inventario_stgotech1', 
         'USER': 'postgres',
         'PASSWORD': '123asdzxc',
         'HOST': 'localhost', 

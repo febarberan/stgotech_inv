@@ -13,6 +13,10 @@ from Inventario.forms import OrdenConsumoForm
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.db.models.functions import TruncMonth
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from math import ceil
+from datetime import date
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 # Vistas relacionadas al inicio y cierre de sesión
@@ -97,19 +101,36 @@ def top_10_lowest_saldo(request):
     return JsonResponse({'part_numbers': part_numbers, 'saldos': saldos})
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
+
 @login_required
 def soon_to_expire_parts(request):
-    today = datetime.now()
-    three_months_later = today + timedelta(days=90)
-    six_months_later = today + timedelta(days=180)
-    
-    data = Incoming.objects.filter(f_vencimiento__gte=three_months_later, f_vencimiento__lte=six_months_later).order_by('f_vencimiento')
-    
-    labels = [entry.f_vencimiento.strftime('%Y-%m-%d') for entry in data]
-    part_numbers = [entry.part_number for entry in data]
-    
-    return JsonResponse({'labels': labels, 'part_numbers': part_numbers})
+    # Obtener la fecha actual
+    today = date.today()
 
+    # Calcular la fecha tres meses después de hoy
+    three_months_later = today + relativedelta(months=3)
+
+    # Calcular el último día del mes actual
+    last_day_of_current_month = today.replace(day=1, month=today.month % 12 + 1) - relativedelta(days=1)
+
+    # Filtrar las partes que están a punto de caducar en el rango de tiempo especificado
+    data = Incoming.objects.filter(
+        (Q(f_vencimiento__gte=today, f_vencimiento__lte=three_months_later) | 
+        Q(f_vencimiento__gte=last_day_of_current_month, f_vencimiento__lte=today))
+    ).order_by('f_vencimiento')
+
+    # Crear listas de etiquetas y números de parte para la respuesta JSON
+    labels = [entry.part_number for entry in data]
+
+    # Calcular la diferencia en meses y redondear hacia arriba al número entero más cercano
+    months_until_expiry = [max(relativedelta(entry.f_vencimiento, today).months + 1, 1) for entry in data]
+
+    # Imprimir datos para verificar en la consola del servidor
+    print('Labels:', labels)
+    print('Months until expiry:', months_until_expiry)
+
+    # Devolver los datos JSON
+    return JsonResponse({'labels': labels, 'months_until_expiry': months_until_expiry})
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 @login_required
 def monthly_weight_chart(request):
@@ -165,32 +186,19 @@ def buscar_datos_inicio(request):
     elif filtro == '2':
         query_filter |= Q(part_number__icontains=search_value)
 
-    query_incoming = Incoming.objects.filter(query_filter).select_related('stdf_fk', 'ubicacion_fk', 'categoria_fk', 'owner_fk').order_by('stdf_fk__stdf_pk')
+    query_incoming = Incoming.objects.filter(query_filter).select_related('stdf_fk', 'ubicacion_fk', 'owner_fk').order_by('stdf_fk__stdf_pk')
 
     total_records_incoming = query_incoming.count()
 
     resultados_incoming_list = []
     
     for incoming in query_incoming:
-        if incoming.categoria_fk.categoria_pk == 1:
-            serial_number = incoming.sn_batch_pk
-            batch_number = None
-        elif incoming.categoria_fk.categoria_pk == 2:
-            serial_number = None
-            batch_number = incoming.sn_batch_pk
-        elif incoming.categoria_fk.categoria_pk == 3:
-            serial_number = incoming.sn_batch_pk
-            batch_number = incoming.batch_pk
-        else:
-            serial_number = None
-            batch_number = None
-
-
-        qty_extraida_total = Consumos.objects.filter(incoming_fk=incoming.sn_batch_pk).aggregate(qty_extraida_total=Sum('qty_extraida'))['qty_extraida_total']
+        
+        qty_extraida_total = Consumos.objects.filter(incoming_fk=incoming.id_incoming).aggregate(qty_extraida_total=Sum('qty_extraida'))['qty_extraida_total']
         
         resultados_incoming_list.append({
-            "serial_number": serial_number,
-            "batch_number": batch_number,
+            "serial_number": incoming.sn_batch_pk,
+            "batch_number": incoming.batch_pk,
             "part_number": incoming.part_number,
             "descripcion": incoming.descripcion,
             "stdf_fk__stdf_pk": incoming.stdf_fk.stdf_pk,
@@ -410,8 +418,6 @@ def obtener_datos_incoming(request):
     elif filtro == '3':
         query_filter |= Q(stdf_fk__stdf_pk=search_value)
 
-
-
     incoming_data = incoming_data.filter(query_filter)
 
     # Ordenar por stdf_pk
@@ -420,29 +426,18 @@ def obtener_datos_incoming(request):
     # Realizar la consulta teniendo en cuenta la paginación
     incoming_data = incoming_data[start:start + length]
 
-
     # Formatea los datos en un formato compatible con DataTables
     data = []
     for incoming in incoming_data:
-        if incoming.categoria_fk.categoria_pk == 1:
-            serial_number = incoming.sn_batch_pk
-            batch_number = None
-        elif incoming.categoria_fk.categoria_pk == 2:
-            serial_number = None
-            batch_number = incoming.sn_batch_pk
-        elif incoming.categoria_fk.categoria_pk == 3:
-            serial_number = incoming.sn_batch_pk
-            batch_number = incoming.batch_pk
-        else:
-            serial_number = None
-            batch_number = None
+        formatted_date = incoming.f_vencimiento.strftime("%b-%Y")  # Formato "mes-año"
         data.append({
-            "serial_number": serial_number,
-            "batch_number": batch_number,
+            "id_incoming": incoming.id_incoming,
+            "sn_batch_pk": incoming.sn_batch_pk,
+            "batch_pk": incoming.batch_pk,
             "part_number":incoming.part_number,
             "descripcion": incoming.descripcion,
             "qty":incoming.qty,
-            "f_vencimiento":incoming.f_vencimiento,
+            "f_vencimiento":formatted_date,
             "usuario": incoming.usuario.username,
             "saldo":incoming.saldo,
         })
@@ -462,8 +457,8 @@ def obtener_datos_incoming(request):
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 @login_required
-def detalle_incoming(request, sn_batch_pk):
-    detalle_incoming = Incoming.objects.get(sn_batch_pk=sn_batch_pk)
+def detalle_incoming(request, id_incoming):
+    detalle_incoming = Incoming.objects.get(id_incoming=id_incoming)
     return render(request, 'tablas_detalle/detalle_incoming.html', {'detalle_incoming': detalle_incoming})
 
 
@@ -507,39 +502,36 @@ def obtener_datos_stdf_incoming(request):
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 #VISTA DE CONSUMO QUE VALIDA EL FORMULARIO Y LO GUARDA Y REDIRIGE A LA VISTA DE CONSUMOS
 @login_required
-def consumos(request):
-    form_consumos = ConsumosForm()
-    if request.method == 'POST':
-        form_consumos = ConsumosForm(request.POST)
-        if form_consumos.is_valid():
-            if request.user.is_authenticated:
-                consumo = form_consumos.save(commit=False)  # Guardar el formulario de Consumos sin guardarlo en la base de datos
+def consumos(request, incoming_fk):
+    if request.user.is_authenticated:
+        incoming = get_object_or_404(Incoming, pk=incoming_fk)
 
+        if request.method == 'POST':
+            form_consumos = ConsumosForm(request.POST)
+
+            if form_consumos.is_valid():
+                consumo = form_consumos.save(commit=False)
                 consumo.usuario = request.user
-
-                # Obtener el registro de Incoming relacionado a través de ForeignKey
-                incoming = consumo.incoming_fk  # Asegúrate de usar el nombre correcto del campo
+                consumo.incoming_fk = incoming  # Asigna el objeto Incoming al campo incoming_fk en el formulario
 
                 if consumo.qty_extraida <= incoming.saldo:
                     incoming.saldo -= consumo.qty_extraida
                     incoming.save()
 
-                    # Guardar el registro de Consumos en la base de datos
                     consumo.save()
                     messages.success(request, "Se ha añadido correctamente")
-                    return redirect('/consumos')
+                    return redirect('consumos', incoming_fk=consumo.incoming_fk)
                 else:
                     error_message = f"No puedes extraer más de lo que hay en el saldo. Saldo actual: {incoming.saldo}."
                     messages.error(request, error_message)
-            else:
-                # Manejo del caso en el que el usuario no está autenticado
-                return HttpResponse("Debes iniciar sesión para realizar esta acción.")
+            # Si el formulario no es válido, puedes renderizar el formulario nuevamente con los errores
+        else:
+            form_consumos = ConsumosForm(initial={'incoming_fk': incoming})
 
-    context = {
-        'form_consumos': form_consumos,
-    }
-    return render(request, 'formularios/consumos.html', context)
-
+        context = {'form_consumos': form_consumos, 'incoming': incoming}
+        return render(request, 'formularios/consumos.html', context)
+    else:
+        return HttpResponse("Debes iniciar sesión para realizar esta acción.")
 
 
 
@@ -679,7 +671,7 @@ def detalle_inicio(request, stdf_pk):
             "f_vencimiento":incoming_obj.f_vencimiento,
             "saldo":incoming_obj.saldo,
             "observaciones":incoming_obj.observaciones,
-            "categoria_fk":incoming_obj.categoria_fk.name_categoria,
+            # "categoria_fk":incoming_obj.categoria_fk.name_categoria,
             "clasificacion_fk":incoming_obj.clasificacion_fk.name_clasificacion,
             "ubicacion_fk":incoming_obj.ubicacion_fk.name_ubicacion,
             "uom_fk":incoming_obj.uom_fk.name_uom,
@@ -800,23 +792,23 @@ def eliminar_comat(request, stdf_pk):
 # Vista de Mantenedor Incoming   #
 ##################################
 @login_required
-def editar_incoming(request, sn_batch_pk):
-    incoming = Incoming.objects.get(pk=sn_batch_pk)
+def editar_incoming(request, id_incoming):
+    incoming = Incoming.objects.get(pk=id_incoming)
 
     if request.method == 'POST':
         form = IncomingForm(request.POST, instance=incoming)
         if form.is_valid():
             form.save()
             messages.success(request, "Se ha Modificado Correctamente")
-            return redirect('/detalle_incoming/'+str(sn_batch_pk))  # Redirige a la página deseada después de la edición.
+            return redirect('/detalle_incoming/'+str(id_incoming))  # Redirige a la página deseada después de la edición.
     else:
         form = IncomingForm(instance=incoming)
 
     return render(request, 'formularios/editar_incoming.html', {'form': form, 'incoming': incoming})
 
 @login_required
-def eliminar_incoming(request, sn_batch_pk):
-    incomings = Incoming.objects.get(pk=sn_batch_pk)
+def eliminar_incoming(request, id_incoming):
+    incomings = Incoming.objects.get(pk=id_incoming)
     incomings.delete()
     messages.success(request, "Se ha Eliminado Correctamente")
     return redirect('/buscar_incoming')
@@ -832,23 +824,27 @@ def editar_consumo(request, consumo_pk):
         return render(request, 'error.html', {'mensaje': 'El Consumo no existe'})
 
     if request.method == 'POST':
-        # Guarda el valor actual de qty_extraida antes de actualizar el formulario
-        qty_inicial = consumo.incoming_fk.qty
-        qty_anterior = consumo.qty_extraida
-
+        # Guarda el valor actual de cantidad_extraida antes de actualizar el formulario
+        cantidad_ext = consumo.qty_extraida
+        cantidad_inicial = consumo.incoming_fk.qty
         form = ConsumosForm(request.POST, instance=consumo)
         if form.is_valid():
-            # Obtiene la cantidad total de cantidad extraída asociada al incoming
-            total_cantidad_extraida = consumo.incoming_fk.total_cantidad_extraida()
-
-            nuevo_qty_extraida = form.cleaned_data['qty_extraida']
-
-            # Calcula la diferencia entre el valor anterior y el nuevo valor
-            saldo = qty_inicial - total_cantidad_extraida + nuevo_qty_extraida
-
-            consumo.incoming_fk.saldo = saldo
-            incoming.save()  # Guarda los cambios en el objeto Incoming
-
+            cantidad_nueva = form.cleaned_data['qty_extraida']
+            if cantidad_nueva > cantidad_ext:
+                resultado = cantidad_nueva - cantidad_ext
+                if resultado > 0:
+                    incoming = consumo.incoming_fk
+                    incoming.saldo -= abs(resultado)  # Suma resultado al saldo
+                    saldo_nuevo = incoming.saldo
+                    incoming.save()
+            elif cantidad_nueva < cantidad_ext:
+                resultado = cantidad_nueva - cantidad_ext
+                if resultado < 0:
+                    incoming = consumo.incoming_fk
+                    incoming.saldo += abs(resultado)  # Resta el valor absoluto de resultado al saldo
+                    saldo_nuevo = incoming.saldo
+                    incoming.save()
+                
             # Guarda los cambios en el objeto Consumo
             form.save()
 
@@ -858,6 +854,9 @@ def editar_consumo(request, consumo_pk):
         form = ConsumosForm(instance=consumo)
 
     return render(request, 'formularios/editar_consumo.html', {'form': form, 'consumo': consumo})
+
+    
+
 @login_required
 def eliminar_consumo(request, consumo_pk):
     consumos = Consumos.objects.get(consumo_pk=consumo_pk)
@@ -876,66 +875,66 @@ def eliminar_consumo(request, consumo_pk):
 def mantenedores_all(request):
     return render(request, 'mantenedores/mantenedores_all.html')
 
-###########################################
-### Vista de Mantenedor Categotia_incoming ####
-###########################################
-@login_required
-def mantenedor_categoria_incoming(request):
-    get_categoria_incoming = Categotia_incoming.objects.all()
+# ###########################################
+# ### Vista de Mantenedor Categotia_incoming ####
+# ###########################################
+# @login_required
+# def mantenedor_categoria_incoming(request):
+#     get_categoria_incoming = Categotia_incoming.objects.all()
 
-    context = {
-        'get_categoria_incoming': get_categoria_incoming,
-    }
-    return render(request, 'mantenedores/categoria_incoming/mantenedor_categoria_incoming.html', context)
-
-# -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
-@login_required
-def editar_categoria_incoming(request, categoria_pk):
-    categoria_incoming = Categotia_incoming.objects.get(categoria_pk=categoria_pk)
-
-    if request.method == 'POST':
-        form = CategoriaForm(request.POST, instance=categoria_incoming)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Se ha Modificado Correctamente")
-            return redirect('/mantenedor_categoria_incoming/')  # Redirige a la página deseada después de la edición.
-    else:
-        form = CategoriaForm(instance=categoria_incoming)
-
-    return render(request, 'mantenedores/categoria_incoming/editar_categoria_incoming.html', {'form': form, 'categoria_incoming': categoria_incoming})
+#     context = {
+#         'get_categoria_incoming': get_categoria_incoming,
+#     }
+#     return render(request, 'mantenedores/categoria_incoming/mantenedor_categoria_incoming.html', context)
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
-@login_required
-def registrar_categoria_incoming(request):
-    form_reg_categoria = CategoriaForm()
+# @login_required
+# def editar_categoria_incoming(request, categoria_pk):
+#     categoria_incoming = Categotia_incoming.objects.get(categoria_pk=categoria_pk)
 
-    if request.method == 'POST':
-        form_reg_categoria = CategoriaForm(request.POST)
-        if form_reg_categoria.is_valid():
-            if Categotia_incoming.objects.exists():
-                last_register = Categotia_incoming.objects.latest('categoria_pk')
-                new_pk = last_register.categoria_pk + 1
-            else:
-                new_pk = 1
+#     if request.method == 'POST':
+#         form = CategoriaForm(request.POST, instance=categoria_incoming)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Se ha Modificado Correctamente")
+#             return redirect('/mantenedor_categoria_incoming/')  # Redirige a la página deseada después de la edición.
+#     else:
+#         form = CategoriaForm(instance=categoria_incoming)
+
+#     return render(request, 'mantenedores/categoria_incoming/editar_categoria_incoming.html', {'form': form, 'categoria_incoming': categoria_incoming})
+
+# -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
+# @login_required
+# def registrar_categoria_incoming(request):
+#     form_reg_categoria = CategoriaForm()
+
+#     if request.method == 'POST':
+#         form_reg_categoria = CategoriaForm(request.POST)
+#         if form_reg_categoria.is_valid():
+#             if Categotia_incoming.objects.exists():
+#                 last_register = Categotia_incoming.objects.latest('categoria_pk')
+#                 new_pk = last_register.categoria_pk + 1
+#             else:
+#                 new_pk = 1
             
-            form_reg_categoria.instance.categoria_pk = new_pk
-            form_reg_categoria.save()
-            messages.success(request, "Se ha Añadido Correctamente")
-            return redirect('/mantenedor_categoria_incoming')
+#             form_reg_categoria.instance.categoria_pk = new_pk
+#             form_reg_categoria.save()
+#             messages.success(request, "Se ha Añadido Correctamente")
+#             return redirect('/mantenedor_categoria_incoming')
         
-    context = {
-        'form_reg_categoria':form_reg_categoria
-    }
+#     context = {
+#         'form_reg_categoria':form_reg_categoria
+#     }
         
-    return render(request, 'mantenedores/categoria_incoming/registrar_categoria_incoming.html', context)
+#     return render(request, 'mantenedores/categoria_incoming/registrar_categoria_incoming.html', context)
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
-@login_required
-def eliminar_categoria_incoming(request, categoria_pk):
-    categoria_incoming = Categotia_incoming.objects.get(categoria_pk=categoria_pk)
-    categoria_incoming.delete()
-    messages.success(request, "Se ha Eliminado Correctamente")
-    return redirect('/mantenedor_categoria_incoming')
+# @login_required
+# def eliminar_categoria_incoming(request, categoria_pk):
+#     categoria_incoming = Categotia_incoming.objects.get(categoria_pk=categoria_pk)
+#     categoria_incoming.delete()
+#     messages.success(request, "Se ha Eliminado Correctamente")
+#     return redirect('/mantenedor_categoria_incoming')
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 
@@ -1760,15 +1759,15 @@ def eliminar_estado_repuesto(request, id):
 ### Vista de Mantenedor DetalleForm ####
 ##################################
 @login_required
-def editar_detalle_incoming_form(request, sn_batch_pk):
-    detalleForm = Detalle_Incoming.objects.get(incoming_fk=sn_batch_pk)
+def editar_detalle_incoming_form(request, id_incoming):
+    detalleForm = Detalle_Incoming.objects.get(incoming_fk=id_incoming)
 
     if request.method == 'POST':
         form = DetalleForm(request.POST, instance=detalleForm)
         if form.is_valid():
             form.save()
             messages.success(request, "Se ha Modificado Correctamente")
-            return redirect('/detalle_incoming/'+sn_batch_pk)  # Redirige a la página deseada después de la edición.
+            return redirect('/detalle_incoming/'+id_incoming)  # Redirige a la página deseada después de la edición.
     else:
         form = DetalleForm(instance=detalleForm)
 

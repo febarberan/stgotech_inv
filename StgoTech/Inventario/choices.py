@@ -184,12 +184,12 @@ ABONA_CANCELA = [
     ('CANCELA', 'CANCELA')
 ]
 
-CATEGORIA_INCOMING = [
+# CATEGORIA_INCOMING = [
 
-    ('Serial Number','SN'),
-    ('Batch Number','BN '),
-    ('Serial/Bacth Number','SN/BN'),
-]
+#     ('Serial Number','SN'),
+#     ('Batch Number','BN '),
+#     ('Serial/Bacth Number','SN/BN'),
+# ]
 
 LICENCIA = [
     ('INCOMING INPECTION','INCOMING INPECTION'),

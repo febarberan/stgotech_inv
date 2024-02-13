@@ -31,16 +31,16 @@ class Consumidor(models.Model):
 
 # Create your models here.
 #TABLA CATEGORIA INCOMING
-class Categotia_incoming(models.Model):
-    categoria_pk = models.AutoField(primary_key=True, unique=True)   
-    name_categoria = models.CharField(blank=True , null=True, max_length=50)
+# class Categotia_incoming(models.Model):
+#     categoria_pk = models.AutoField(primary_key=True, unique=True)   
+#     name_categoria = models.CharField(blank=True , null=True, max_length=50)
 
-    class Meta:
-        db_table = "categoria_incoming"
+#     class Meta:
+#         db_table = "categoria_incoming"
     
-    def __str__(self):
+#     def __str__(self):
 
-        return self.name_categoria
+#         return self.name_categoria
 
 #TABLA ESTADO  
 class Estado(models.Model):
@@ -193,7 +193,8 @@ class Comat(models.Model):
     
 #Tabla Incoming
 class Incoming(models.Model):
-    sn_batch_pk = models.CharField(primary_key=True, unique=True)
+    id_incoming = models.AutoField(primary_key=True,unique=True)
+    sn_batch_pk = models.CharField(blank=True, null=True, max_length=50)
     batch_pk = models.CharField(blank=True, null=True, max_length=50)
     part_number = models.CharField(blank=True, null=True, max_length=50)
     f_incoming = models.DateField(blank=True, null=True)
@@ -206,7 +207,7 @@ class Incoming(models.Model):
     saldo = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0)])
     observaciones = models.CharField(blank=True, null=True, max_length=250)
     #Llaves foraneas
-    categoria_fk = models.ForeignKey(Categotia_incoming, on_delete=models.SET_NULL, null=True)
+    #categoria_fk = models.ForeignKey(Categotia_incoming, on_delete=models.SET_NULL, null=True)
     clasificacion_fk = models.ForeignKey(Clasificacion, on_delete=models.SET_NULL, null=True)
     ubicacion_fk = models.ForeignKey(Ubicacion, on_delete=models.SET_NULL, null=True)
     uom_fk = models.ForeignKey(Uom, on_delete=models.SET_NULL, null=True)
