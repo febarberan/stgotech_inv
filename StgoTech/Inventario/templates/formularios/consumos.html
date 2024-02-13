@@ -16,17 +16,49 @@
         </div>
     </div>
 </div>
+
 <hr> 
+
+<table class="Tabla_detalle">
+
+    <tr class="fila-encabezado">
+  
+      <td>Serial Number</td>
+  
+      <td>Batch Number</td>
+  
+      <td>Part Number</td>
+
+      <td>Saldo</td>
+  
+    </tr>
+  
+    <tr>
+  
+      <td>{{incoming.sn_batch_pk}}</td>
+  
+      <td>{{incoming.batch_pk}}</td>
+  
+      <td>{{incoming.part_number}}</td>
+      
+      <td>{{incoming.saldo}}</td>
+  
+    </tr>
+  
+  </table>
+
+
 <div class="container m-2">
     <h5>Formulario de Consumos</h5>
     <form onsubmit="return validateForm_consumo()" action="" method="post" autocomplete="off">
         {% csrf_token %}
         <div class="row p-2">
             {% for consumo in form_consumos %}
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
-                <label>{{consumo.label}}</label>
-                {{consumo}}
-            </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 p-2">
+                    <label>{{ consumo.label }}</label>
+                        {{ consumo }}
+                    
+                </div>
             {% endfor %}
         </div>
         <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Guardar">
@@ -35,6 +67,30 @@
 
 
 <style>
+
+
+.Tabla_detalle {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.Tabla_detalle th, .Tabla_detalle td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center; /* Alineación centrada */
+}
+
+.Tabla_detalle th {
+  background-color: #f2f2f2;
+}
+
+
+
+.fila-encabezado {
+  background-color: #3498db; /* Color de fondo sólido */
+  background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); /* Degradado lineal */
+  color: #fff; /* Color del texto */
+}
 
 .reducido {
     width: 60% ;
@@ -64,6 +120,8 @@ label {
     
 {% block js %}
 <script>
+   
+
     function validateInput(inputValue, elementId) {
         if (inputValue < 0) {
             Swal.fire({

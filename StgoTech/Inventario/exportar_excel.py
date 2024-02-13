@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 
 
 @login_required
-def exportar_excel_incoming(request, sn_batch_pk):
+def exportar_excel_incoming(request, id_incoming):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="datos.xlsx"'
 
@@ -28,11 +28,11 @@ def exportar_excel_incoming(request, sn_batch_pk):
     ws = wk.active
 
     #Obtener Datos de la base de datos
-    datos = Incoming.objects.get(sn_batch_pk = sn_batch_pk)
+    datos = Incoming.objects.get(id_incoming = id_incoming)
 
 
    
-    detallesform = Detalle_Incoming.objects.get(incoming_fk=sn_batch_pk)
+    detallesform = Detalle_Incoming.objects.get(incoming_fk=id_incoming)
     
     
 # Crea una instancia de la imagen
@@ -119,14 +119,10 @@ def exportar_excel_incoming(request, sn_batch_pk):
     ws['T8']  = 'N° de Serie/SN'
     ws.merge_cells('T9:Y11')#Campo Relleno de BBDD
     
-    #PASA EL VALOR SN_BATCH A LA CELDA DEPENDIENDO SI ES SERIAL NUMBER O BATCH NUMBER
-    if datos.categoria_fk.categoria_pk == 1:
-        ws['T9'] = datos.sn_batch_pk
-    elif datos.categoria_fk.categoria_pk == 2:
-        ws['E60'] = datos.sn_batch_pk
-    elif datos.categoria_fk.categoria_pk == 3:
-        ws['T9'] = datos.sn_batch_pk
-        ws['E60'] = datos.batch_pk
+    #ASIGNA EL SERIAL NUMBER Y BATCH NUMBER A LAS CELDAS
+    ws['T9'] = datos.sn_batch_pk
+    ws['E60'] = datos.batch_pk
+    
 
 
     

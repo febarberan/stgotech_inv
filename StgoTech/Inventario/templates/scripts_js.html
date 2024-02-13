@@ -21,37 +21,37 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        var Categoria = document.getElementById('id_categoria_fk');
-        var batch = document.getElementById('id_batch_pk');
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     var Categoria = document.getElementById('id_categoria_fk');
+    //     var batch = document.getElementById('id_batch_pk');
 
 
-        function disableField(field) {
-            field.disabled = true;
-            field.parentNode.style.display = 'none';
-        }
+    //     function disableField(field) {
+    //         field.disabled = true;
+    //         field.parentNode.style.display = 'none';
+    //     }
 
-        function enableField(field) {
-            field.disabled = false;
-            field.parentNode.style.display = 'block';
-        }
+    //     function enableField(field) {
+    //         field.disabled = false;
+    //         field.parentNode.style.display = 'block';
+    //     }
 
-        Categoria.addEventListener('change', function () {
-            if (Categoria.value === '1' || Categoria.value === '2' || Categoria.value === '') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
-                disableField(batch);
+    //     Categoria.addEventListener('change', function () {
+    //         if (Categoria.value === '1' || Categoria.value === '2' || Categoria.value === '') { // Cambia '1' a 'NO' para desactivar los campos en caso de "NO"
+    //             disableField(batch);
 
-            } else {
-                enableField(batch);
+    //         } else {
+    //             enableField(batch);
 
-            }
-        });
+    //         }
+    //     });
 
-        // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
-        if (Categoria.value === '1' || Categoria.value === '2' || Categoria.value === '') {
-            disableField(batch);
+    //     // Inicialmente, ocultar y desactivar los campos si la opción seleccionada en item13 es "NO"
+    //     if (Categoria.value === '1' || Categoria.value === '2' || Categoria.value === '') {
+    //         disableField(batch);
 
-        }
-    });
+    //     }
+    // });
 
     document.addEventListener('DOMContentLoaded', function () {
         var item18 = document.getElementById('id_form1-item18');
@@ -291,8 +291,8 @@
             },
             "columns": [
                 // Define las columnas que deseas mostrar
-                { "data": "serial_number" },
-                { "data": "batch_number" },
+                { "data": "sn_batch_pk" },
+                { "data": "batch_pk" },
                 { "data": "part_number" },
                 { "data": "descripcion" },
                 { "data": "qty" },
@@ -303,20 +303,17 @@
                 {
                     "data": null,
                     "render": function (data, type, row, meta) {
-                        var serial_number = data.serial_number;
-                        var batch_number = data.batch_number;
+                        var id_incoming = data.id_incoming;  // Asegúrate de usar el nombre correcto del campo
                         var url = "";
 
-                        if (serial_number) {
-                            url = "/detalle_incoming/" + serial_number + "/";
-                        } else if (batch_number) {
-                            url = "/detalle_incoming/" + batch_number + "/";
+                        if (id_incoming) {
+                            url = "/detalle_incoming/" + id_incoming + "/";
                         } else {
-                            // Manejar el caso en que ni serial_number ni batch_number estén presentes
+                            // Manejar el caso en que id_incoming no está presente
                             // Puedes configurar una URL predeterminada o mostrar un mensaje de error.
                         }
 
-                        return url ? '<a href="' + url + '" class="ver-detalles" data-sn_batch_pk="' + serial_number + '">Detalles</a>' : 'URL no válida';
+                        return url ? '<a href="' + url + '" class="ver-detalles" data-id_incoming="' + id_incoming + '">Detalles</a>' : 'URL no válida';
                     }
                 }
             ]
@@ -416,47 +413,47 @@
             }
         });
     });
-    $(document).ready(function () {
-        $('#id_incoming_fk').select2({
-            placeholder: 'Seleccione Serial Number o Batch Number',
-            ajax: {
-                url: '/obtener_sn_consumo/',
-                dataType: 'json',
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    console.log(data);
-                    if (data.sn_data) {
-                        var results = data.sn_data.map(function (item) {
-                            // Dividir la cadena en dos partes en función del guion
-                            var parts = item.sn_batch_pk.split('SN:').pop().split(' - ');
+    // $(document).ready(function () {
+    //     $('#id_incoming_fk').select2({
+    //         placeholder: 'Seleccione Serial Number o Batch Number',
+    //         ajax: {
+    //             url: '/obtener_sn_consumo/',
+    //             dataType: 'json',
+    //             data: function (params) {
+    //                 return {
+    //                     q: params.term
+    //                 };
+    //             },
+    //             processResults: function (data) {
+    //                 console.log(data);
+    //                 if (data.sn_data) {
+    //                     var results = data.sn_data.map(function (item) {
+    //                         // Dividir la cadena en dos partes en función del guion
+    //                         var parts = item.sn_batch_pk.split('SN:').pop().split(' - ');
 
-                            // Tomar la primera parte (antes del guion)
-                            var id = parts[0];
+    //                         // Tomar la primera parte (antes del guion)
+    //                         var id = parts[0];
 
-                            return {
-                                id: id,
-                                text: item.sn_batch_pk,
-                                // Agrega más campos del objeto Comat si es necesario
-                            };
-                        });
+    //                         return {
+    //                             id: id,
+    //                             text: item.sn_batch_pk,
+    //                             // Agrega más campos del objeto Comat si es necesario
+    //                         };
+    //                     });
 
-                        return { results: results };
-                    } else {
-                        return { results: [] };
-                    }
-                },
-                cache: true,
-                error: function (xhr, textStatus, errorThrown) {
-                    console.error('Error en la solicitud AJAX:', errorThrown);
-                    console.log('Datos de la solicitud AJAX:', xhr.responseText);
-                }
-            }
-        });
-    });
+    //                     return { results: results };
+    //                 } else {
+    //                     return { results: [] };
+    //                 }
+    //             },
+    //             cache: true,
+    //             error: function (xhr, textStatus, errorThrown) {
+    //                 console.error('Error en la solicitud AJAX:', errorThrown);
+    //                 console.log('Datos de la solicitud AJAX:', xhr.responseText);
+    //             }
+    //         }
+    //     });
+    // });
 
 
 
@@ -650,7 +647,7 @@
                 { "data": "total_u_purchase_cost", "width": "10%" },
                 { "data": "f_vencimiento", "width": "10%" },
                 { "data": "saldo", "width": "10%" },
-                { "data": "categoria_fk", "width": "10%" },
+                // { "data": "categoria_fk", "width": "10%" },
                 { "data": "clasificacion_fk", "width": "10%" },
                 { "data": "ubicacion_fk", "width": "10%" },
                 { "data": "uom_fk", "width": "10%" },
@@ -883,33 +880,45 @@
     // Otro grafico
 
     fetch('/soon_to_expire_parts/')
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById('myChart3').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',  // Utilizamos un gráfico de barras horizontales
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: 'Part Numbers Próximos a Vencer',
-                        data: data.part_numbers,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            beginAtZero: true
-                        },
-                        y: {
-                            beginAtZero: true
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data received:', data);  // Agregar este console.log
+
+        const ctx = document.getElementById('myChart3').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',  // Utilizamos un gráfico de barras horizontales
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Meses hasta el vencimiento',
+                    data: data.months_until_expiry,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        // Configuración del eje X
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Part Numbers'
                         }
-                    }
+                    }],
+                    yAxes: [{
+                        // Configuración del eje Y
+                        beginAtZero: false,  // No empezar desde 0
+                        suggestedMin: 1,     // Establecer el valor mínimo en 1
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Meses hasta el vencimiento'
+                        }
+                    }]
                 }
-            });
+            }
         });
+    });
 
     // Otro grafico
 

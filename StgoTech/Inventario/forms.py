@@ -1,6 +1,7 @@
 from django.forms import ModelForm, ValidationError
 from .models import *
 from django import forms
+from datetime import date
 
 
 
@@ -56,17 +57,17 @@ class ComatForm(ModelForm):
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 class IncomingForm(ModelForm):
 
-    sn_batch_pk = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Serial Number o Batch Number"}),label='Serial Number o Batch Number')
+    sn_batch_pk = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Serial Number"}),label='Serial Number')
     batch_pk = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Batch Number"}),label='Batch Number', required=False)
     part_number = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Part Number"}),label='Part Number')
-    f_incoming = forms.DateField(widget=forms.DateInput(attrs={"class":"form-control reducido", 'type': 'date', 'placeholder':'Selecciona la fecha'}), required=True, label='Fecha Ingreso Incoming')
+    f_incoming = forms.DateField(widget=forms.DateInput(attrs={"class": "form-control reducido", 'type': 'date', 'placeholder': 'Selecciona la fecha'}),required=True,label='Fecha Ingreso Incoming',initial=date.today())
     po = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Product Order"}),label='PO')
     qty = forms.IntegerField(widget=forms.NumberInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Cantidad"}),label='Quantity')
     u_purchase_cost = forms.DecimalField(widget=forms.NumberInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Unit Purchase Cost"}),label='Unit Purchase Cost')
     f_vencimiento = forms.DateField(widget=forms.DateInput(attrs={"class":"form-control reducido", 'type': 'date', "placeholder":'Seleccione fecha'}), required=True, label='Fecha Vencimiento')
     descripcion = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Descripción"}),label='Descripción')
     observaciones = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Observaciones"}),label='Observaciones',required=True)
-    categoria_fk = forms.ModelChoiceField(queryset=Categotia_incoming.objects.all(), widget=forms.Select(attrs={"class": "select2-selection select2-selection--single","placeholder": "Ingresa la Categoria SN o BN"}), label='Categoria')
+    #categoria_fk = forms.ModelChoiceField(queryset=Categotia_incoming.objects.all(), widget=forms.Select(attrs={"class": "select2-selection select2-selection--single","placeholder": "Ingresa la Categoria SN o BN"}), label='Categoria')
     clasificacion_fk = forms.ModelChoiceField(queryset=Clasificacion.objects.all(), widget=forms.Select(attrs={"class": "form-control reducido","placeholder": "Ingresa la Clasificación"}), label='Clasificación')
     ubicacion_fk = forms.ModelChoiceField(queryset=Ubicacion.objects.all(), widget=forms.Select(attrs={"class": "select2-selection select2-selection--single","placeholder": "Ingresa la Ubicacion"}), label='Ubicación')
     uom_fk = forms.ModelChoiceField(queryset=Uom.objects.all(), widget=forms.Select(attrs={"class": "select2-selection select2-selection--single","placeholder": "Ingreso Uom"}), label='Uom')
@@ -79,7 +80,7 @@ class IncomingForm(ModelForm):
         model = Incoming
         fields = [
         'sn_batch_pk',
-        'categoria_fk',
+        #'categoria_fk',
         'batch_pk',
         'part_number',
         'f_incoming',
@@ -105,14 +106,14 @@ class ConsumosForm(ModelForm):
     matricula_aeronave = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Matricula"}),label='Matricula Aeronave')
     observaciones = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control reducido", "placeholder": "Ingresa Observaciones"}),label='Observaciones',required=False)
     f_transaccion = forms.DateTimeField(widget=forms.DateInput(attrs={"class":"form-control reducido",'type': 'date', "placeholder": "Seleccione fecha"}), required=False, label='Fecha de Transacción')
-    incoming_fk = forms.ModelChoiceField(queryset=Incoming.objects.all(), widget=forms.Select(attrs={"class": "select2-selection select2-selection--single","placeholder": "Ingresa Serial Number o Batch Number"}), label='Serial Number o Batch Number')
+    incoming_fk = forms.ModelChoiceField(queryset=Incoming.objects.all(),widget=forms.HiddenInput(attrs={"class": "select2-selection select2-selection--single", "placeholder": ""}), label='')
+    #incoming_fk = forms.ModelChoiceField(queryset=Incoming.objects.all(), widget=forms.Select(attrs={"class": "select2-selection select2-selection--single","placeholder": "Ingresa Serial Number o Batch Number"}), label='Serial Number o Batch Number')
     consumidor_fk = forms.ModelChoiceField(queryset=Consumidor.objects.all(), widget=forms.Select(attrs={"class": "select2-selection select2-selection--single","placeholder": "Ingresa Consumidor"}), label='Consumidor')
     # incoming_id = forms.CharField(widget=forms.ChoiceField(attrs={"class":"form-control"}),label='Serial Number')
     # id_estado = forms.CharField(widget=forms.ChoiceField(attrs={"class":"form-control"}),label='Estado')
     class Meta:
         model = Consumos
         fields = [
-            'incoming_fk',
             'qty_extraida',
             'matricula_aeronave',
             'f_transaccion',
@@ -120,20 +121,19 @@ class ConsumosForm(ModelForm):
             'observaciones',
         ]
 
-    def __init__(self, *args, **kwargs):
-        super(ConsumosForm, self).__init__(*args, **kwargs)
-        self.fields['incoming_fk'].label_from_instance = self.label_from_instance
-
+    # def __init__(self, *args, **kwargs):
+    #     super(ConsumosForm, self).__init__(*args, **kwargs)
+    #     self.fields['incoming_fk'].label_from_instance = self.label_from_instance
     def label_from_instance(self, obj):
         return f'{obj.sn_batch_pk} - {obj.stdf_fk.stdf_pk}'
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
-class CategoriaForm(ModelForm):
-    name_categoria = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control", "placeholder": "Ingresa Nueva Categoria", 'id':'name_categoria'}),label='Categoria')
+# class CategoriaForm(ModelForm):
+#     name_categoria = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control", "placeholder": "Ingresa Nueva Categoria", 'id':'name_categoria'}),label='Categoria')
 
-    class Meta:
-        model = Categotia_incoming
-        fields = '__all__'
+#     class Meta:
+#         model = Categotia_incoming
+#         fields = '__all__'
 
 class EstadoForm(ModelForm):
     estado = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control", "placeholder": "Ingresa Nuevo Estado", 'id':'estado'}),label='Estado')
