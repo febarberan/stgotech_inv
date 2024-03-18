@@ -6,33 +6,51 @@
   <hr>
   <div class="container">
     <div class="row">
-      <div class="col-6">
-            <h5>Buscador Inicio</h5>
-            <form action="{% url 'buscar_productos_inicio' %}" method="GET" class="d-flex align-items-center" autocomplete="off">
-
-              <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 m-2">
+      <div class="col-4">
+        <h5>Buscador Inicio</h5>
+        <form action="{% url 'buscar_productos_inicio' %}" method="GET" class="d-flex align-items-center" autocomplete="off">
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
                     <select class="form-control" name="f">
+                        <option value="2">P.N.</option>
                         <option value="1">STDF</option>
-                        <option value="2">PART NUMBER</option>
+                        
                     </select>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 m-2">
-                    <input class="form-control ml-3" type="text" name="n" placeholder="Ingresa un Part Number o STDF">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
+                    <input class="form-control ml-3" type="text" name="n"  placeholder="Ingrese:">
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                  <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Buscar">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
+                    <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;"
+                        class="btn m-2" type="submit" value="Buscar">
                 </div>
-              </div>
-
-          </form>
-        </div>
-        <div class="col-4">
-            <h5>Anclaje</h5>
-            <a name="" id=""
-                style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;"
-                class="btn" href="#dashboard" role="button">Vista del Dashboard</a>
-        </div>
+            </div>
+        </form>
+    
+        <!-- <h5 class="mt-3">Buscador Part Number, Serial Number o STDF</h5>
+        <form action="{% url 'buscar_productos_incoming' %}" method="GET" autocomplete="off">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+                    <select class="form-control" name="t">
+                        <option value="1">P.N.</option>
+                        <option value="2">SN/BN</option>
+                        <option value="3">STDF</option>
+                    </select>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
+                    <input class="form-control" type="text" name="e" placeholder="Ingrese:">
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
+                    <input
+                        style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;"
+                        class="btn m-2" type="submit" value="Buscar">
+                </div>
+            </div> -->
+          
+          
+      </div>
+      
+        
 
     </div>
 </div>
@@ -41,10 +59,10 @@
     <h1>KPIs Almacén Técnico<h1>
         <br>
         <div class="row">
-          <div class="col-lg-6 col-md-12">
+          <!-- <div class="col-lg-6 col-md-12">
             <h5>KPI - Cantidad de Tipo de Prioridad por STDF</h5>
             <canvas id="myChart"></canvas>
-          </div>
+          </div> -->
           
           <div class="col-lg-6 col-md-12">
             <h5>KPI - Top 10 Repuestos con Menos Saldo</h5>

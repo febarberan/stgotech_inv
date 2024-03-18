@@ -32,6 +32,32 @@
     
 </div>
 
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtenemos la referencia al campo de compañía
+        var companiaSelect = document.getElementById('id_compania');
+        // Obtenemos la referencia al campo de orden de consumos
+        var ordenConsumoInput = document.getElementById('id_orden_consumo');
+    
+        // Función para actualizar el valor del campo de orden de consumos
+        function actualizarOrdenConsumos() {
+            // Lógica para determinar el valor del campo de orden de consumos
+            if (companiaSelect.value === 'STGOTECHNIK GRUPPE') {
+                ordenConsumoInput.value = '65248240001';
+            } else if (companiaSelect.value === 'JETSMART AIRLINES SPA') {
+                ordenConsumoInput.value = '66248240001';
+            } else {
+                // Valor predeterminado o lógica adicional si es necesario
+                ordenConsumoInput.value = '';
+            }
+        }
+    
+        // Asociamos la función al evento de cambio en el campo de compañía
+        companiaSelect.addEventListener('change', actualizarOrdenConsumos);
+    
+        // Llamamos a la función inicialmente para establecer el valor inicial
+        actualizarOrdenConsumos();
+    });
+    </script>
 
 {% endblock %}

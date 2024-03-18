@@ -12,8 +12,31 @@ from django.contrib.auth.decorators import login_required, permission_required
 
 @login_required
 def exportar_excel_incoming(request, id_incoming):
+    datos = Incoming.objects.get(id_incoming = id_incoming)
+    
+    # Construir el nombre del archivo con componentes condicionales
+    nombre_archivo = ""
+
+    # Agregar "SN" solo si sn_batch_pk no es None
+    if datos.sn_batch_pk != "":
+        nombre_archivo += f"SN {datos.sn_batch_pk}"
+
+    if datos.batch_pk != "":
+        nombre_archivo += f" BN {datos.batch_pk}"
+
+    if datos.part_number != "":
+        nombre_archivo += f" PN {datos.part_number}"
+
+    if datos.stdf_fk != "":
+        nombre_archivo += f" STDF {datos.stdf_fk}"
+
+
+    
+    # Agregar la extensión del archivo
+    nombre_archivo += ".xlsx"
+    # Configurar la respuesta HTTP
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="datos.xlsx"'
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
 
     imagen_path = 'staticfiles\\img\\Imagen1.png'
     image = Image.open(imagen_path)
@@ -28,7 +51,7 @@ def exportar_excel_incoming(request, id_incoming):
     ws = wk.active
 
     #Obtener Datos de la base de datos
-    datos = Incoming.objects.get(id_incoming = id_incoming)
+    
 
 
    
@@ -226,14 +249,18 @@ def exportar_excel_incoming(request, id_incoming):
     ws.merge_cells('A25:G25')
     ws['A25']  = 'Check Periodica (Si Aplica)'
     ws.merge_cells('H25:N25') #Campo Relleno de BBDD 
-    ws['H25'] = detallesform.check_periodica
-
+    if datos.check_periodica is False:
+        ws['H25'] = "N/A"
+    if datos.check_periodica is True:
+        ws['H25'] = datos.f_check_periodica
 
     ws.merge_cells('O25:R25')
     ws['O25']  = 'Shel Life Due'
     ws.merge_cells('S25:Y25') #Campo Relleno de BBDD 
-    ws['S25'] = datos.f_vencimiento 
-
+    if datos.vencimiento is False:
+        ws['S25'] = "N/A"
+    if datos.vencimiento is True:
+        ws['S25'] = datos.f_vencimiento 
     #ENCABEZADO DE LA TABLA
     ws['A27'] = 'Item'
     ws.merge_cells('B27:S27')
@@ -244,99 +271,99 @@ def exportar_excel_incoming(request, id_incoming):
     ws['W27']  = 'NO'
 
 
-    if detallesform.item1 == '0':
+    if detallesform.item1 is False:
         ws['W29'] = "X"
-    elif detallesform.item1 == '1':
+    elif detallesform.item1 is True:
         ws['T29'] = "X"
 
 
-    if detallesform.item2 == '0': #NO
+    if detallesform.item2 is False: #NO
         ws['W30'] = "X"
-    elif detallesform.item2 == '1':#SI
+    elif detallesform.item2 is True:#SI
         ws['T30'] = "X"
 
-    if detallesform.item3 == '0': #NO
+    if detallesform.item3 is False: #NO
         ws['W31'] = "X"
-    elif detallesform.item3 == '1':#SI
+    elif detallesform.item3 is True:#SI
         ws['T31'] = "X"
 
-    if detallesform.item4 == '0': #NO
+    if detallesform.item4 is False: #NO
         ws['W32'] = "X"
-    elif detallesform.item4 == '1':#SI
+    elif detallesform.item4 is True:#SI
         ws['T32'] = "X"
 
-    if detallesform.item5 == '0': #NO
+    if detallesform.item5 is False: #NO
         ws['W33'] = "X"
-    elif detallesform.item5 == '1':#SI
+    elif detallesform.item5 is True:#SI
         ws['T33'] = "X"
 
-    if detallesform.item6 == '0': #NO
+    if detallesform.item6 is False: #NO
         ws['W34'] = "X"
-    elif detallesform.item6 == '1':#SI
+    elif detallesform.item6 is True:#SI
         ws['T34'] = "X"
     
-    if detallesform.item7 == '0': #NO
+    if detallesform.item7 is False: #NO
         ws['W35'] = "X"
-    elif detallesform.item7 == '1':#SI
+    elif detallesform.item7 is True:#SI
         ws['T35'] = "X"
 
-    if detallesform.item8 == '0': #NO
+    if detallesform.item8 is False: #NO
         ws['W36'] = "X"
-    elif detallesform.item8 == '1':#SI
+    elif detallesform.item8 is True:#SI
         ws['T36'] = "X"
 
-    if detallesform.item9 == '0': #NO
+    if detallesform.item9 is False: #NO
         ws['W37'] = "X"
-    elif detallesform.item9 == '1':#SI
+    elif detallesform.item9 is True:#SI
         ws['T37'] = "X"
     
-    if detallesform.item10 == '0': #NO
+    if detallesform.item10 is False: #NO
         ws['W38'] = "X"
-    elif detallesform.item10 == '1':#SI
+    elif detallesform.item10 is True:#SI
         ws['T38'] = "X"
 
-    if detallesform.item11 == '0': #NO
+    if detallesform.item11 is False: #NO
         ws['W39'] = "X"
-    elif detallesform.item11 == '1':#SI
+    elif detallesform.item11 is True:#SI
         ws['T39'] = "X"
 
-    if detallesform.item12 == '0': #NO
+    if detallesform.item12 is False: #NO
         ws['W40'] = "X"
-    elif detallesform.item12 == '1':#SI
+    elif detallesform.item12 is True:#SI
         ws['T40'] = "X"
 
-    if detallesform.item13 == '0': #NO
+    if detallesform.item13 is False: #NO
         ws['W41'] = "X"
-    elif detallesform.item13 == '1':#SI
+    elif detallesform.item13 is True:#SI
         ws['T41'] = "X"
         ws['P41'] = detallesform.n_item13
 
-    if detallesform.item14 == '0': #NO
+    if detallesform.item14 is False: #NO
         ws['W42'] = "X"
-    elif detallesform.item14 == '1':#SI
+    elif detallesform.item14 is True:#SI
         ws['T42'] = "X"
 
-    if detallesform.item15 == '0': #NO
+    if detallesform.item15 is False: #NO
         ws['W43'] = "X"
-    elif detallesform.item15 == '1':#SI
+    elif detallesform.item15 is True:#SI
         ws['T43'] = "X"
         ws['M43'] = detallesform.n_item15
     
-    if detallesform.item16 == '0': #NO
+    if detallesform.item16 is True: #NO
         ws['W44'] = "X"
-    elif detallesform.item16 == '1':#SI
+    elif detallesform.item16 is True:#SI
         ws['T44'] = "X"
         ws['M44'] = detallesform.n_item16
 
-    if detallesform.item17 == '0': #NO
+    if detallesform.item17 is False: #NO
         ws['W45'] = "X"
-    elif detallesform.item17 == '1':#SI
+    elif detallesform.item17 is True:#SI
         ws['T45'] = "X"
         ws['M45'] = detallesform.n_item17
 
-    if detallesform.item18 == '0': #NO
+    if detallesform.item18 is False: #NO
         ws['W46'] = "X"
-    elif detallesform.item18 == '1':#SI
+    elif detallesform.item18 is True:#SI
         ws['T46'] = "X"
         if detallesform.item_18tsn == "TSN":
             ws['I46'] = detallesform.n_item18tsn
@@ -348,25 +375,25 @@ def exportar_excel_incoming(request, id_incoming):
             ws['R46'] = detallesform.n_item18tsn
 
 
-    if detallesform.item19 == '0': #NO
+    if detallesform.item19 is False: #NO
         ws['W47'] = "X"
-    elif detallesform.item19 == '1':#SI
+    elif detallesform.item19 is True:#SI
         ws['T47'] = "X"
     
     
-    if detallesform.item20 == '0': #NO
+    if detallesform.item20 is False: #NO
         ws['W48'] = "X"
-    elif detallesform.item20 == '1':#SI
+    elif detallesform.item20 is True:#SI
         ws['T48'] = "X"
 
-    if detallesform.item21 == '0': #NO
+    if detallesform.item21 is False: #NO
         ws['W49'] = "X"
-    elif detallesform.item21 == '1':#SI
+    elif detallesform.item21 is True:#SI
         ws['T49'] = "X"
 
-    if detallesform.item22 == '0': #NO
+    if detallesform.item22 is False: #NO
         ws['W50'] = "X"
-    elif detallesform.item22 == '1':#SI
+    elif detallesform.item22 is True:#SI
         ws['T50'] = "X"
         ws['M50'] = detallesform.n_item22
 
@@ -565,6 +592,7 @@ def exportar_excel_incoming(request, id_incoming):
     ws['A63'] = 'UBICACION'
     ws.merge_cells('E63:Y64')
     ws['E63'] = datos.ubicacion_fk.name_ubicacion 
+    
     
 
     ws.merge_cells('A65:D65')
@@ -817,6 +845,10 @@ def exportar_excel_incoming(request, id_incoming):
     for celda in ws[72]:
         celda.font = formato_fuente_fila_72
         celda.alignment = alineacion_izquierda
+
+    nuevo_formato_fuente = Font(size=26 , bold=(True))  # Puedes ajustar el tamaño según tus necesidades
+    #Aplicar el nuevo formato de fuente a la celda específica
+    ws['E63'].font = nuevo_formato_fuente
     
 
     wk.save(response)

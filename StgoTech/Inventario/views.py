@@ -2,12 +2,11 @@ from django.shortcuts import redirect, render , get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 import openpyxl
 from .forms import *
-from django.db.models import Q , Sum
+from django.db.models import Q , Sum ,Count
 from django.http.response import JsonResponse
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
-from django.db.models import Count
 from django.db import connection
 from Inventario.forms import OrdenConsumoForm
 from django.contrib import messages
@@ -17,6 +16,10 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from math import ceil
 from datetime import date
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import datetime
+
+
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 # Vistas relacionadas al inicio y cierre de sesión
@@ -125,9 +128,7 @@ def soon_to_expire_parts(request):
     # Calcular la diferencia en meses y redondear hacia arriba al número entero más cercano
     months_until_expiry = [max(relativedelta(entry.f_vencimiento, today).months + 1, 1) for entry in data]
 
-    # Imprimir datos para verificar en la consola del servidor
-    print('Labels:', labels)
-    print('Months until expiry:', months_until_expiry)
+  
 
     # Devolver los datos JSON
     return JsonResponse({'labels': labels, 'months_until_expiry': months_until_expiry})
@@ -136,9 +137,8 @@ def soon_to_expire_parts(request):
 def monthly_weight_chart(request):
     data = Comat.objects.annotate(month=TruncMonth('f_stdf')).values('month').annotate(total_weight=Sum('peso')).order_by('month')
     
-    labels = [entry['month'].strftime('%Y-%m') for entry in data]
+    labels = [entry['month'].strftime('%Y-%m') if 'month' in entry and entry['month'] and isinstance(entry['month'], datetime.datetime) else '' for entry in data]
     weights = [entry['total_weight'] for entry in data]
-    
     return JsonResponse({'labels': labels, 'weights': weights})
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
@@ -146,7 +146,7 @@ def monthly_weight_chart(request):
 def monthly_cif_chart(request):
     data = Comat.objects.annotate(month=TruncMonth('f_stdf')).values('month').annotate(total_cif=Sum('sum_cif')).order_by('month')
     
-    labels = [entry['month'].strftime('%Y-%m') for entry in data]
+    labels = [entry['month'].strftime('%Y-%m') if 'month' in entry and isinstance(entry['month'], datetime.datetime) else '' for entry in data]
     cif_values = [entry['total_cif'] for entry in data]
     
     return JsonResponse({'labels': labels, 'cif_values': cif_values})
@@ -195,8 +195,12 @@ def buscar_datos_inicio(request):
     for incoming in query_incoming:
         
         qty_extraida_total = Consumos.objects.filter(incoming_fk=incoming.id_incoming).aggregate(qty_extraida_total=Sum('qty_extraida'))['qty_extraida_total']
-        
+        if incoming.f_vencimiento:
+            formatted_f_vencimiento = incoming.f_vencimiento.strftime("%b %Y")
+        else:
+            formatted_f_vencimiento = "N/A"
         resultados_incoming_list.append({
+            "id_incoming" : incoming.id_incoming,
             "serial_number": incoming.sn_batch_pk,
             "batch_number": incoming.batch_pk,
             "part_number": incoming.part_number,
@@ -208,7 +212,7 @@ def buscar_datos_inicio(request):
             "stdf_fk__num_manifiesto": incoming.stdf_fk.num_manifiesto,
             "owner_fk__name_owner": incoming.owner_fk.name_owner,
             "ubicacion_fk__name_ubicacion": incoming.ubicacion_fk.name_ubicacion,
-            "f_vencimiento": incoming.f_vencimiento,
+            "f_vencimiento": formatted_f_vencimiento,
             "qty_extraida_total": qty_extraida_total,
         })
 
@@ -284,8 +288,7 @@ def buscar_productos(request):
 
     return render(request, 'resultados_busqueda/resultado_busqueda_stdf.html', {'query_comat':query_comat, 'filtro':filtro})
 
-# -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
-#OBTIENE LOS RESULTADOS CON MÁS RELACION QUE TIENE LA BUSQUEDA
+
 @login_required
 def obtener_datos_comat(request):
     # Obtén los parámetros enviados por DataTables
@@ -325,6 +328,7 @@ def obtener_datos_comat(request):
             "sum_cif":comat.sum_cif,
             "bodega_fk":comat.bodega_fk.name_bodega,
             "usuario": comat.usuario.username,
+            "compania": comat.compania_fk.nom_compania,
             
         })
     
@@ -341,6 +345,56 @@ def obtener_datos_comat(request):
         "recordsFiltered": records_filtered  # Total de registros después del filtrado (puedes ajustar esto según tus necesidades)
     })
 
+
+# -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
+#OBTIENE LOS RESULTADOS CON MÁS RELACION QUE TIENE LA BUSQUEDA
+# @login_required
+# def obtener_datos_consumos(request):
+#     # Obtén los parámetros enviados por DataTables
+#     draw = int(request.GET.get('draw', 0))
+#     start = int(request.GET.get('start', 0))
+#     length = int(request.GET.get('length', 10))  # Número de registros por página
+#     search_value = request.GET.get('t', '')  # Término de búsqueda
+
+#     # Inicializa la consulta sin filtrar
+#     consumos_data = Consumos.objects.all()
+
+#     # Realiza la consulta teniendo en cuenta el término de búsqueda en incoming_fk
+#     if search_value:
+#         consumos_data = consumos_data.filter(incoming_fk__sn_batch_pk__icontains=search_value)
+
+#     # Realiza la paginación
+#     consumos_data = consumos_data[start:start + length]
+
+#     # Formatea los datos en un formato compatible con DataTables
+#     data = []
+#     for consumo in consumos_data:
+#         data.append({
+#             "consumo_pk": consumo.consumo_pk,
+#             "serial_number": consumo.incoming_fk.sn_batch_pk,
+#             "batch_number": consumo.incoming_fk.batch_pk,
+#             "part_number": consumo.incoming_fk.part_number,
+#             "incoming_fk": consumo.incoming_fk.sn_batch_pk,
+#             "f_transaccion": consumo.f_transaccion,
+#             "orden_consumo": consumo.orden_consumo,
+#             "matricula_aeronave": consumo.matricula_aeronave,
+#             "qty_extraida": consumo.qty_extraida,
+#             "usuario": consumo.usuario.username,
+#         })
+
+#     if search_value:
+#         records_filtered = Consumos.objects.filter(incoming_fk__sn_batch_pk__icontains=search_value).count()
+#     else:
+#         # Si no hay término de búsqueda, simplemente cuenta todos los registros
+#         records_filtered = Consumos.objects.count()
+
+#     return JsonResponse({
+#         "data": data,
+#         "draw": draw,
+#         "recordsTotal": Consumos.objects.count(),  # Total de registros sin filtrar
+#         "recordsFiltered": records_filtered,
+#     })
+
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 #OBTIENE LOS DATOS PARA REALIZAR EL DETALLE POR LA ID
 @login_required
@@ -354,38 +408,102 @@ def detalle_comat(request, stdf_pk):
 from django.core.cache import cache
 
 @login_required 
-def incoming(request):
+def incoming(request, stdf_pk):
     get_form_incoming = Incoming.objects.all()
     total_unit_cost = 0
+
     if request.method == 'POST':
         form_incoming = IncomingForm(request.POST)
         if form_incoming.is_valid():
-                if request.user.is_authenticated:
-                    # Guarda el formulario de Incoming
-                    incoming = form_incoming.save(commit=False)
+            if request.user.is_authenticated:
+                incoming = form_incoming.save(commit=False)
+                incoming.usuario = request.user
+                total_unit_cost = incoming.qty * incoming.u_purchase_cost 
+                incoming.total_u_purchase_cost = total_unit_cost
+                incoming.saldo = incoming.qty
+                incoming.save()
+                request.session['incoming_fk'] = incoming.id_incoming
+                messages.success(request, "Se ha Añadido Correctamente")
 
-                    incoming.usuario = request.user
-
-                    total_unit_cost =  incoming.qty * incoming.u_purchase_cost 
-                    # Copia el valor de cantidad_extraida a la columna saldo
-                    incoming.total_u_purchase_cost = total_unit_cost
-                    incoming.saldo = incoming.qty
-                    incoming.save()
-                    request.session['incoming_fk'] = incoming.sn_batch_pk
-                    messages.success(request, "Se ha Añadido Correctamente")
-                    return redirect('/detalle_form')
-                else:
-                # Manejo del caso en el que el usuario no está autenticado
-                    return HttpResponse("Debes iniciar sesión para realizar esta acción.")
+                # Redirige a la vista 'detalle_form' con el incoming_fk especificado
+                return redirect('detalle_form', incoming_fk=incoming.id_incoming)
+            else:
+                return HttpResponse("Debes iniciar sesión para realizar esta acción.")
     else:
-        form_incoming = IncomingForm()
-
+        # Asegúrate de proporcionar stdf_pk al inicializar el formulario
+        form_incoming = IncomingForm(initial={'stdf_fk': stdf_pk})
+    
     context = {
         'form_incoming': form_incoming,
         'get_form_incoming': get_form_incoming, 
     }
     return render(request, 'formularios/incoming.html', context)
 
+@login_required 
+def mostrar_ingreso(request):
+    return render(request, 'resultados_busqueda/resultado_busqueda_ingreso.html')
+
+@login_required 
+def ingreso(request):
+    # Obtener los datos de la tabla Comat
+    comat_data = Comat.objects.values('stdf_pk', 'awb', 'hawb', 'n_part_numbers', 'compania_fk__nom_compania')
+
+    # Obtener la cantidad de part numbers ingresados en la tabla Incoming por cada stdf_fk
+    incoming_data = Incoming.objects.values('stdf_fk').annotate(part_numbers_count=Count('part_number'))
+
+    # Combinar los datos de Comat e Incoming usando el stdf_pk
+    result_data = []
+    for comat_entry in comat_data:
+        stdf_pk = comat_entry['stdf_pk']
+        awb = comat_entry['awb']
+        hawb = comat_entry['hawb']
+        compania = comat_entry['compania_fk__nom_compania']
+        total_part_numbers = comat_entry['n_part_numbers']
+
+        # Encontrar la entrada correspondiente en incoming_data
+        incoming_entry = next((item for item in incoming_data if item['stdf_fk'] == stdf_pk), {'part_numbers_count': 0})
+
+        part_numbers_ingresados = incoming_entry['part_numbers_count']
+
+        # Verificar si total_part_numbers o part_numbers_ingresados son None o el contador llega a 0
+        if total_part_numbers is None or part_numbers_ingresados is None:
+            # No agregar la entrada al resultado final
+            continue
+
+        # Calcular la cantidad restante de part numbers
+        restantes = max(total_part_numbers - part_numbers_ingresados, 0)  # Utilizar max para asegurarse de que no sea negativo
+
+
+        # Agregar la entrada al resultado final
+        result_data.append({
+            'stdf_pk': stdf_pk,
+            'awb': awb,
+            'hawb': hawb,
+            'total_part_numbers': total_part_numbers,
+            'part_numbers_ingresados': part_numbers_ingresados,
+            'part_numbers_restantes': restantes,
+            'compania': compania,
+        })
+
+    result_data = [entry for entry in result_data if entry['part_numbers_restantes'] > 0]
+
+    # Aplicar paginación si se proporcionan los parámetros start y length
+    start = int(request.GET.get('start', 0))
+    length = int(request.GET.get('length', 10))
+
+    paginator = Paginator(result_data, length)
+    try:
+        result_data_page = paginator.page((start // length) + 1)
+    except EmptyPage:
+        result_data_page = []
+
+    # Devolver los datos paginados como respuesta JSON
+    return JsonResponse({
+        'draw': int(request.GET.get('draw', 1)),
+        'recordsTotal': len(result_data),
+        'recordsFiltered': paginator.count,
+        'data': result_data_page.object_list,  # Solo enviar la lista de datos, no el objeto Paginator completo
+    })
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 #GUARDA EL VALOR QUE SE BUSCO Y REDIRIGE A LA PAGINA DE RESULTADOS
 @login_required
@@ -429,7 +547,9 @@ def obtener_datos_incoming(request):
     # Formatea los datos en un formato compatible con DataTables
     data = []
     for incoming in incoming_data:
-        formatted_date = incoming.f_vencimiento.strftime("%b-%Y")  # Formato "mes-año"
+        formatted_date = None
+        if incoming.f_vencimiento:
+            formatted_date = incoming.f_vencimiento.strftime("%b-%Y")
         data.append({
             "id_incoming": incoming.id_incoming,
             "sn_batch_pk": incoming.sn_batch_pk,
@@ -520,7 +640,7 @@ def consumos(request, incoming_fk):
 
                     consumo.save()
                     messages.success(request, "Se ha añadido correctamente")
-                    return redirect('consumos', incoming_fk=consumo.incoming_fk)
+                    return redirect('consumos', incoming_fk=consumo.incoming_fk.id_incoming)
                 else:
                     error_message = f"No puedes extraer más de lo que hay en el saldo. Saldo actual: {incoming.saldo}."
                     messages.error(request, error_message)
@@ -537,13 +657,13 @@ def consumos(request, incoming_fk):
 
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 #GUARDA LA BUSQUEDA QUE SE REALIZO Y REDIRIGE A LA PAGINA DE RESULTADOS DE CONSUMOS
+
 @login_required
 def buscar_productos_consumos(request):
     # Obtiene el término de búsqueda del usuario desde la URL
     query_consu = request.GET.get('t', '')
 
     return render(request, 'resultados_busqueda/resultado_busqueda_consumos.html', {'query_consu': query_consu})
-
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 #OBTIENE LOS DATOS RELACIONADOS A LA BUSQUEDA DE CONSUMOS
 @login_required
@@ -559,7 +679,8 @@ def obtener_datos_consumos(request):
 
     # Realiza la consulta teniendo en cuenta el término de búsqueda en incoming_fk
     if search_value:
-            consumos_data = consumos_data.filter(Q(incoming_fk=search_value))
+        consumos_data = consumos_data.filter(incoming_fk__id_incoming=search_value)
+
 
     # Realiza la paginación
     consumos_data = consumos_data[start:start + length]
@@ -569,6 +690,9 @@ def obtener_datos_consumos(request):
     for consumo in consumos_data:
         data.append({
             "consumo_pk": consumo.consumo_pk,
+            "serial_number": consumo.incoming_fk.sn_batch_pk,
+            "batch_number": consumo.incoming_fk.batch_pk,
+            "part_number": consumo.incoming_fk.part_number,
             "incoming_fk": consumo.incoming_fk.sn_batch_pk,
             "f_transaccion": consumo.f_transaccion,
             "orden_consumo": consumo.orden_consumo,
@@ -578,9 +702,9 @@ def obtener_datos_consumos(request):
         })
 
     if search_value:
-        records_filtered = Consumos.objects.filter(incoming_fk=search_value).count()
+        records_filtered = Consumos.objects.filter(incoming_fk__id_incoming=search_value).count()
     else:
-    # Si no hay término de búsqueda, simplemente cuenta todos los registros
+        # Si no hay término de búsqueda, simplemente cuenta todos los registros
         records_filtered = Consumos.objects.count()
 
     return JsonResponse({
@@ -588,9 +712,7 @@ def obtener_datos_consumos(request):
         "draw": draw,
         "recordsTotal": Consumos.objects.count(),  # Total de registros sin filtrar
         "recordsFiltered": records_filtered,
-        
     })
-
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 #OBTIENE LOS DATOS PARA REALIZAR EL DETALLE DE CONSUMOS
 @login_required
@@ -660,7 +782,9 @@ def detalle_inicio(request, stdf_pk):
 
     for incoming_obj in incoming_objects_paginated:
         incoming_data_list.append({
+            "id_incoming": incoming_obj.id_incoming,
             "sn_batch_pk": incoming_obj.sn_batch_pk,
+            "batch":incoming_obj.batch_pk,
             "part_number": incoming_obj.part_number,
             "f_incoming": incoming_obj.f_incoming,
             "descripcion": incoming_obj.descripcion,
@@ -670,7 +794,6 @@ def detalle_inicio(request, stdf_pk):
             "total_u_purchase_cost":incoming_obj.total_u_purchase_cost,
             "f_vencimiento":incoming_obj.f_vencimiento,
             "saldo":incoming_obj.saldo,
-            "observaciones":incoming_obj.observaciones,
             # "categoria_fk":incoming_obj.categoria_fk.name_categoria,
             "clasificacion_fk":incoming_obj.clasificacion_fk.name_clasificacion,
             "ubicacion_fk":incoming_obj.ubicacion_fk.name_ubicacion,
@@ -678,6 +801,8 @@ def detalle_inicio(request, stdf_pk):
             "owner_fk":incoming_obj.owner_fk.name_owner,
             "condicion_fk":incoming_obj.condicion_fk.name_condicion,
             "ficha_fk":incoming_obj.ficha_fk.name_ficha,
+            "stdf_fk": incoming_obj.stdf_fk.stdf_pk,
+            "observaciones":incoming_obj.observaciones,
     })
 
     incoming_records_total = incoming_objects.count()
@@ -745,17 +870,20 @@ def detalle_inicio(request, stdf_pk):
     
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
 @login_required
-def detalle_form(request):
-    form1 = DetalleForm(prefix='form1')
+def detalle_form(request, incoming_fk):
+    # Obtén el objeto Incoming utilizando el incoming_fk
+    incoming_obj = get_object_or_404(Incoming, id_incoming=incoming_fk)
+
+    form1 = DetalleForm(prefix='form1', initial={'incoming_fk': incoming_obj})
+
     if request.method == 'POST':
         form1 = DetalleForm(request.POST, prefix='form1')
         if form1.is_valid():
-            datos_form1 = form1.cleaned_data
-            # Crea una instancia de Detalle_Incoming y guárdala
-            modelo1 = Detalle_Incoming(**datos_form1)
+            modelo1 = form1.save(commit=False)
+            modelo1.incoming_fk = incoming_obj
             modelo1.save()
             messages.success(request, "Se ha Añadido Correctamente")
-            return redirect(f'/detalle_incoming/{form1.cleaned_data["incoming_fk"]}/')
+            return redirect(f'/detalle_incoming/{incoming_fk}/')
 
     return render(request, 'tablas_detalle/detalle_incomingforms.html', {'form1': form1})
 # -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- ## -- # -- # -- # -- # -- # -- #
@@ -766,14 +894,14 @@ def detalle_form(request):
 @login_required
 @permission_required('Inventario.change_comat')
 def editar_comat(request, stdf_pk):
-    comat = Comat.objects.get(pk=stdf_pk)
+    comat = get_object_or_404(Comat, pk=stdf_pk)
 
     if request.method == 'POST':
         form = ComatForm(request.POST, instance=comat)
         if form.is_valid():
             form.save()
             messages.success(request, "Se ha Modificado Correctamente")
-            return redirect('/detalle_comat/'+str(stdf_pk))  # Redirige a la página deseada después de la edición.
+            return redirect('/detalle_comat/'+str(stdf_pk))
     else:
         form = ComatForm(instance=comat)
 
@@ -826,30 +954,26 @@ def editar_consumo(request, consumo_pk):
     if request.method == 'POST':
         # Guarda el valor actual de cantidad_extraida antes de actualizar el formulario
         cantidad_ext = consumo.qty_extraida
-        cantidad_inicial = consumo.incoming_fk.qty
         form = ConsumosForm(request.POST, instance=consumo)
+
         if form.is_valid():
             cantidad_nueva = form.cleaned_data['qty_extraida']
-            if cantidad_nueva > cantidad_ext:
-                resultado = cantidad_nueva - cantidad_ext
-                if resultado > 0:
-                    incoming = consumo.incoming_fk
-                    incoming.saldo -= abs(resultado)  # Suma resultado al saldo
-                    saldo_nuevo = incoming.saldo
-                    incoming.save()
-            elif cantidad_nueva < cantidad_ext:
-                resultado = cantidad_nueva - cantidad_ext
-                if resultado < 0:
-                    incoming = consumo.incoming_fk
-                    incoming.saldo += abs(resultado)  # Resta el valor absoluto de resultado al saldo
-                    saldo_nuevo = incoming.saldo
-                    incoming.save()
-                
+
+            # Calcula la diferencia
+            resultado = cantidad_nueva - cantidad_ext
+
+            # Ajusta el saldo en consecuencia
+            if resultado != 0:
+                incoming = consumo.incoming_fk
+                incoming.saldo -= resultado  # Ajusta el saldo según la diferencia
+                incoming.save()
+
             # Guarda los cambios en el objeto Consumo
             form.save()
 
             messages.success(request, "Se ha modificado correctamente.")
             return redirect('/detalle_consumos/' + str(consumo_pk))
+        
     else:
         form = ConsumosForm(instance=consumo)
 
@@ -865,7 +989,7 @@ def eliminar_consumo(request, consumo_pk):
     incoming.save()
     consumos.delete()
     messages.success(request, "Se ha Eliminado Correctamente")
-    return redirect('/buscar_consumos')
+    return redirect(f'/buscar_productos_consumos/?t={consumos.incoming_fk.id_incoming}')
 
 ###########################################
 ### Vista de Mantenedores all ####

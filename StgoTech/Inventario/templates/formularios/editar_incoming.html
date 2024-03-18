@@ -75,6 +75,11 @@
         var isInput5Valid = validateInput(parseFloat(document.getElementById("id_part_number").value), "id_u_purchase_cost");
         // Puedes agregar más lógica aquí para manejar los resultados si es necesario
 
+        // Ocultar el label con id select2-id_stdf_fk-container
+        var labelToHide = document.getElementById("select2-id_stdf_fk-container");
+        if (labelToHide) {
+            labelToHide.style.display = 'none';
+        }
         // Verificar si todos los inputs son válidos
         if (isInput1Valid && isInput2Valid && isInput3Valid && isInput4Valid && isInput5Valid) {
             return true;

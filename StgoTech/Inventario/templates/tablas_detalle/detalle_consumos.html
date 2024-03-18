@@ -36,12 +36,12 @@
                 <td class="col-sm-8">{{detalle_consumos.consumo_pk}}</td>
             </tr>
             <tr>
-                <th class="col-sm-4">Serial / Number:</th>
-                <td class="col-sm-8">{{detalle_consumos.incoming_fk}}</td>
+                <th class="col-sm-4">Serial Number:</th>
+                <td class="col-sm-8">{{detalle_consumos.incoming_fk.sn_batch_pk}}</td>
             </tr>
             <tr>
-                <th class="col-sm-4">Categoria:</th>
-                <td class="col-sm-8">{{incoming_data.categoria_fk }}</td>
+                <th class="col-sm-4">Batch Number:</th>
+                <td class="col-sm-8">{{detalle_consumos.incoming_fk.batch_pk}}</td>
             </tr>
             <tr>
                 <th class="col-sm-4">Part Number:</th>

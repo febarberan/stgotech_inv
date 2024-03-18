@@ -6,6 +6,11 @@
   {% if query_inicio %}
   <p>Resultados para: "{{ query_inicio }}"</p>
   {% endif %}
+  <h4>Iconos</h4>
+  <ol>
+    <li><i class="fa-solid fa-info fa-lg"></i>: Detalle de la STDF</li>
+    <li><i class="fa-solid fa-angle-down fa-lg"></i>: Agregar Consumos</li>
+  </ol>
   <div class="container">
     {% include 'datatables/mostrar_inicio.html' %}
   </div>

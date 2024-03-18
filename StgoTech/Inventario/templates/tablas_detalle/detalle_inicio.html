@@ -49,6 +49,10 @@
                 <th>FECHA DE MANIFIESTO:</th>
                 <td>{{comat_data.f_manifiesto}}</td>
             </tr>
+            <tr>
+                <th>COMPAÑIA:</th>
+                <td>{{comat_data.compania_fk}}</td>
+            </tr>
         </table>
     </div>
     <div class="col-md-6">
@@ -85,6 +89,11 @@
                 <th>ORIGEN:</th>
                 <td>{{comat_data.origen_fk}}</td>
             </tr>
+            
+            <tr>
+                <th>USUARIO:</th>
+                <td>{{comat_data.usuario}}</td>
+            </tr>
             <tr>
                 <th>OBSERVACION:</th>
                 <td>{{comat_data.observaciones}}</td>
@@ -94,29 +103,38 @@
 </div>
 
 <h3>INCOMINGS</h3>
+<h4>Iconos</h4>
+<ol>
+    <li><i class="fa-solid fa-angle-down fa-lg"></i>: Agregar Consumos</li>
+    <li><i class="fa-solid fa-info fa-lg"></i>: Detalle del Incoming</li>
+    <li><i class="fa-solid fa-magnifying-glass"></i>: Ver Consumos</li>
+</ol>
 <div class="tabla-responsive">
     <!-- <input id="input1" oninput="sincronizarInputs(this, 'input2')" type="search" class="" placeholder="" aria-controls="tabla-detalle-incoming"> -->
     <table id="tabla-detalle-incoming" class="display" id="search-incoming">
         <thead>
             <tr>
-                <th>SN</th>
-                <th>PN</th>
-                <th>FEC INCOMING</th>
-                <th>Descripción</th>
+                <th style="display: none;">ID</th>
+                <th>PART NUMBER</th>
+                <th>SERIAL NUMBER</th>
+                <th>BATCH NUMBER</th>
+                <th>FECHA INCOMING</th>
+                <th>DESCRIPCION</th>
                 <th>P.O</th>
                 <th>QTY</th>
-                <th>UPC</th>
-                <th>TUPC</th>
-                <th>FEC VEN</th>
-                <th>Saldo</th>
-                <th>Categoria</th>
-                <th>Clasificación</th>
-                <th>Ubicación</th>
+                <th>UNIT PURSHACE COST</th>
+                <th>TOTAL PURSHACE COST</th>
+                <th>FECHA VENCIMIENTO</th>
+                <th>SALDO</th>
+                <!-- <th>Categoria</th> -->
+                <th>CLASIFICACION</th>
+                <th>UBICACION</th>
                 <th>UOM</th>
-                <th>Owner</th>
-                <th>Condición</th>
-                <th>Ficha</th>
-                <th>Observaciones</th>
+                <th>OWNER</th>
+                <th>CONDICION</th>
+                <th>NUMERO DE FICHA</th>
+                <th>OBSERVACIONES</th>
+                <th>ACCION</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -124,9 +142,9 @@
 </div>
 <br>
 
-<h3>CONSUMOS</h3>
+<!-- <h3>CONSUMOS</h3>
 <div class="tabla-responsive">
-    <!-- <input id="input2" oninput="sincronizarInputs(this, 'input1')" type="search" class="" placeholder="" aria-controls="tabla-detalle-consumos"> -->
+    <input id="input2" oninput="sincronizarInputs(this, 'input1')" type="search" class="" placeholder="" aria-controls="tabla-detalle-consumos">
     <table id="tabla-detalle-consumos" class="display">
         <thead>
             <tr>
@@ -139,7 +157,7 @@
         </thead>
         <tbody></tbody>
     </table>
-</div>
+</div> -->
 
 <script>
     function sincronizarInputs(input, targetId) {
