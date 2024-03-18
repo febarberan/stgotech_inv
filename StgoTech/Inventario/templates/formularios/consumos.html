@@ -1,21 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="container">
-    <div class="row">
-        <div class="col-6">
-            <h5>Buscador Serial Number</h5>
-            <form action="{% url 'buscar_productos_consumos' %}" method="GET" autocomplete="off">
-                <input class="form-control" type="text" name="t" placeholder="Ingrese Serial Number">
-                <input style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;" class="btn m-2" type="submit" value="Buscar">
-            </form>
-        </div>
-        <div class="col-6">
-            <h5>Formulario Orden de Consumo</h5>
-            <a style="background-image: linear-gradient(135deg, rgb(32, 144, 215) 0%, rgb(16, 91, 148) 100%); color: #f1f8fe;"  class="btn btn-primary" href="/orden_consumo" role="button">Ir a Orden de Consumo</a>
-        </div>
-    </div>
-</div>
+
 
 <hr> 
 

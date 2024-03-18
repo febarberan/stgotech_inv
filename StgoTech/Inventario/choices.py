@@ -1,7 +1,7 @@
 COMPANIA = [
 
-    ( 'STGO TECHNIK', 'STGO TECHNIK' ),
-    ( 'JETSMART', 'JETSMART')
+    ( 'STGOTECHNIK GRUPPE', 'STGOTECHNIK GRUPPE' ),
+    ( 'JETSMART AIRLINES SPA', 'JETSMART AIRLINES SPA')
 
 ]
 
@@ -42,13 +42,13 @@ TSN = [
 ]
 
 
-Prioridad = [
+# Prioridad = [
 
-    ('Media', 'Media'),
-    ('Alta', 'Alta'),
-    ('Baja', 'Baja'),
+#     ('Media', 'Media'),
+#     ('Alta', 'Alta'),
+#     ('Baja', 'Baja'),
 
-]
+# ]
 
 
 

@@ -13,6 +13,7 @@
                 {{ field }}
             </div>
             {% endfor %}
+            
         </div>
         <input class="btn btn-primary" type="submit" value="Guardar">
     </form>
@@ -44,16 +45,16 @@
     }
 
     function validateForm_consumo() {
-        // Validar cada input y recoger los resultados
+    // Validar cada input y recoger los resultados
         var isInput1Valid = validateInput(parseFloat(document.getElementById("id_qty_extraida").value), "id_qty_extraida");
 
         // Puedes agregar más lógica aquí para manejar los resultados si es necesario
 
         // Verificar si todos los inputs son válidos
         if (isInput1Valid) {
-            return true;
+            return true;  // Permitir el envío del formulario si todos los campos son válidos
         } else {
-            return false;
+            return false;  // Bloquear el envío del formulario si algún campo no es válido
         }
     }
 </script>
